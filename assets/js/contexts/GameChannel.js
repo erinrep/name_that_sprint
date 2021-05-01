@@ -24,14 +24,14 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     if (socket && !gameChannel) {
       const channel = socket.channel(topic, {user_name: userName})
 
-      channel.on('player_joined', (data) => {
-        console.log("player joined", data)
-        setPlayers(Object.keys(data))
+      channel.on('player_joined', ({users}) => {
+        console.log("player joined", users)
+        setPlayers(users)
       })
 
-      channel.on('player_left', (data) => {
-        console.log("player left", data)
-        //setPlayers(Object.keys(data))
+      channel.on('player_left', ({users}) => {
+        console.log("player left", users)
+        setPlayers(users)
       })
 
       console.debug('Joining channel', topic)
@@ -60,7 +60,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     if (gameChannel) {
       gameChannel.off('idea_received')
       gameChannel.on('idea_received', ({idea}) => {
-        console.log("idea_received", ideas)
         setIdeas([...ideas, idea])
       })
     }
