@@ -14,7 +14,8 @@ defmodule NameThatSprintWeb.LobbyChannel do
   end
 
   defp new_game(socket) do
-    room_code = [:positive]
+    room_code =
+      [:positive]
       |> System.unique_integer()
       |> Integer.to_string()
 

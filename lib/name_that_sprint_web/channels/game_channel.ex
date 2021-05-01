@@ -5,29 +5,35 @@ defmodule NameThatSprintWeb.GameChannel do
   alias NameThatSprint.{Presence, Game, GameSupervisor}
 
   def join("game:" <> room_code, %{"user_name" => user_name}, socket) do
-    Logger.debug"> join #{inspect room_code}"
+    Logger.debug("> join #{inspect(room_code)}")
     socket
-      |> assign_player(user_name)
-      |> check_that_game_exists(room_code)
-      |> game_status()
+    |> assign_player(user_name)
+    |> check_that_game_exists(room_code)
+    |> game_status()
   end
 
   def handle_info(:after_join, socket) do
-    {:ok, _} = Presence.track(socket, socket.assigns.user, %{
-      online_at: inspect(System.system_time(:seconds))
-    })
-    users = socket
+    {:ok, _} =
+      Presence.track(socket, socket.assigns.user, %{
+        online_at: inspect(System.system_time(:seconds))
+      })
+
+    users =
+      socket
       |> Presence.list()
       |> Map.keys()
+
     broadcast!(socket, "player_joined", %{users: users})
     {:noreply, socket}
   end
 
   def terminate(reason, socket) do
-    users = socket
+    users =
+      socket
       |> Presence.list()
       |> Map.keys()
       |> Enum.filter(&(&1 != socket.assigns.user))
+
     broadcast!(socket, "player_left", %{users: users})
   end
 
@@ -38,15 +44,17 @@ defmodule NameThatSprintWeb.GameChannel do
   end
 
   defp assign_player(socket, user_name) do
-    player_exists? = socket
+    player_exists? =
+      socket
       |> Presence.list()
       |> Map.has_key?(user_name)
+
     case player_exists? do
       false ->
         send(self, :after_join)
         assign(socket, :user, user_name)
       true -> {:error, %{reason: :name_in_use}}
-    end   
+    end
   end
 
   defp check_that_game_exists({:error, reason}, _room_code), do: {:error, reason}
