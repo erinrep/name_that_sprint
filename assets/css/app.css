@@ -1,0 +1,8 @@
+/* This file is for your main application css. */
+
+@import "./phoenix.css";
+
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+}
