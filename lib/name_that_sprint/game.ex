@@ -41,10 +41,18 @@ defmodule NameThatSprint.Game do
   end
 
   def handle_call({:add_idea, name}, _from, state_data) do
-    idea = %{name: name, votes: []}
-    state_data[:ideas]
-    |> update_in(&(List.insert_at(&1, -1, idea)))
-    |> reply_success({:ok, idea})
+    existing_idea = state_data
+    |> Map.get(:ideas)
+    |> Enum.find(&(&1.name == name))
+
+    case existing_idea do
+      nil ->
+        idea = %{name: name, votes: []}
+        state_data[:ideas]
+        |> update_in(&(List.insert_at(&1, -1, idea)))
+        |> reply_success({:ok, idea})
+      _idea -> {:reply, {:error, :duplicate_name}, state_data, @timeout}
+    end
   end
 
   def handle_call({:set_voting_mode, mode_status}, _from, state_data) do

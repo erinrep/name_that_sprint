@@ -38,9 +38,12 @@ defmodule NameThatSprintWeb.GameChannel do
   end
 
   def handle_in("idea", %{"name" => name}, socket) do
-    {:ok, item} = Game.add_idea(via(socket.topic), name)
-    broadcast!(socket, "idea_received", item)
-    {:reply, {:ok, item}, socket}
+    case Game.add_idea(via(socket.topic), name) do
+      {:ok, idea} ->
+        broadcast!(socket, "idea_received", idea)
+        {:reply, {:ok, idea}, socket}
+      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+    end
   end
 
   def handle_in("set_voting_mode", %{"status" => status}, socket) do

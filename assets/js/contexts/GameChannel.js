@@ -12,10 +12,11 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const [error, setError] = useState("")
 
   const sendIdea = (name) => {
+    setError("")
     if (gameChannel) {
       gameChannel.push('idea', {name: name})
         .receive('ok', (resp) => console.log('idea success', resp))
-        .receive('error', (resp) => console.error('idea error', resp))
+        .receive('error', ({reason}) => setError(reason))
         .receive('timeout', () => console.error('idea timeout'))
     } else {
       console.error('Channel not connected')
