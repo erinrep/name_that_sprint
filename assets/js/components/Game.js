@@ -3,41 +3,107 @@ import { GameChannelContext } from '../contexts/GameChannel'
 
 const Game = () => {
   const [idea, setIdea] = useState("")
-  const { sendIdea, players, topic, ideas } = useContext(GameChannelContext)
+  const { 
+    userName,
+    sendIdea,
+    players,
+    topic,
+    ideas,
+    isLeader,
+    votingMode,
+    setVotingMode,
+    sendVote,
+    error
+  } = useContext(GameChannelContext)
   const roomCode = topic.split(":")[1]
 
   return (
     <div>
       <h2>Room Code: {roomCode}</h2>
 
-      <p>
-        Submit ideas for the name of the sprint.
-      </p>
+      {error && <p>{error}</p>}
 
-      <div>
-        <form onSubmit={(ev) => {
-          ev.preventDefault()
-          sendIdea(idea)
-          setIdea("")
-        }}>
-          <input name="idea" aria-label="idea for sprint name" value={idea} onChange={(ev) => {
-            setIdea(ev.currentTarget.value)
-          }}></input>
-          <br/>
-          <button type="submit">Submit Idea</button>
-        </form>
-      </div>
+      {votingMode ? (
+        <p>Vote for your favorites</p>
+      ) : (
+        <>
+          <p>
+            Submit ideas for the name of the sprint.
+          </p>
+
+          <div>
+            <form onSubmit={(ev) => {
+              ev.preventDefault()
+              sendIdea(idea)
+              setIdea("")
+            }}>
+              <input size={100} name="idea" aria-label="idea for sprint name" value={idea} onChange={(ev) => {
+                setIdea(ev.currentTarget.value)
+              }}></input>
+              <p><button type="submit">Submit Idea</button></p>
+            </form>
+          </div>
+        </>
+      )}
 
       <div>
         <h3>Ideas</h3>
         <ul>
-          {ideas.map((name) => {
+          {ideas.map(({name, votes}) => {
             return (
-              <li key={name}>{name}</li>
+              <li key={name}>
+                <span aria-hidden="true">{name}</span>
+                {votingMode && (
+                  <>
+                    <button
+                      className="margin-left-1"
+                      aria-label={`Add vote for ${name}`}
+                      onClick={() => sendVote(name)}
+                    >
+                      +
+                    </button>
+                    {votes.includes(userName) && 
+                      <button
+                        className="margin-left-1"
+                        aria-label={`Remove vote for ${name}`}
+                        onClick={() => sendVote(name, false)}
+                      >
+                        -
+                      </button>
+                    }
+                    <ul aria-label={`Players who voted for ${name}`}>
+                      {votes.map((user, index) => <li key={`${name}:${user}:${index}`}>{user}</li>)}
+                    </ul>
+                  </>
+                )}
+              </li>
             )
           })}
         </ul>
       </div>
+
+      {isLeader && (
+        <div>
+          <h3>Settings</h3>
+          <label>Entry Mode
+            <input
+              type="radio"
+              name="mode"
+              checked={!votingMode}
+              onChange={(ev) => setVotingMode(false)}
+            />
+          </label>
+          <br/>
+          <label>Voting Mode
+            <input
+              type="radio"
+              name="mode"
+              checked={votingMode}
+              onChange={(ev) => setVotingMode(true)}
+            />
+          </label>
+        </div>
+      )}
 
       <div>
         <h3>Players</h3>

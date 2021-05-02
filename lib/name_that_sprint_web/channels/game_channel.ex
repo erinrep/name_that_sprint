@@ -38,9 +38,33 @@ defmodule NameThatSprintWeb.GameChannel do
   end
 
   def handle_in("idea", %{"name" => name}, socket) do
-    Game.add_idea(via(socket.topic), name)
-    broadcast!(socket, "idea_received", %{idea: name})
-    {:reply, {:ok, %{idea: name}}, socket}
+    {:ok, item} = Game.add_idea(via(socket.topic), name)
+    broadcast!(socket, "idea_received", item)
+    {:reply, {:ok, item}, socket}
+  end
+
+  def handle_in("set_voting_mode", %{"status" => status}, socket) do
+    {:ok, mode_status} = Game.set_voting_mode(via(socket.topic), status)
+    broadcast!(socket, "voting_mode_updated", %{status: mode_status})
+    {:reply, :ok, socket}
+  end
+
+  def handle_in("add_vote", %{"user" => user, "vote" => vote}, socket) do
+    case Game.add_vote(via(socket.topic), vote, user) do
+      {:ok, item} -> 
+        broadcast!(socket, "vote_updated", item)
+        {:reply, :ok, socket}
+      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+    end
+  end
+
+  def handle_in("remove_vote", %{"user" => user, "vote" => vote}, socket) do
+    case Game.remove_vote(via(socket.topic), vote, user) do
+      {:ok, item} -> 
+        broadcast!(socket, "vote_updated", item)
+        {:reply, :ok, socket}
+      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+    end
   end
 
   defp assign_player(socket, user_name) do

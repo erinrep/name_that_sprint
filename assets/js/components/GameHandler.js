@@ -41,14 +41,14 @@ const GameHandler = ({ match, history }) => {
         setUserName(tempName)
         setError("")
       }}>
-        <label>What is your name? 
+        <label>What is your name?{" "}
           <input
             name="user_name"
             value={tempName}
             onChange={(ev) => setTempName(ev.currentTarget.value)}>
           </input>
         </label>
-        <button type="submit">Submit</button>
+        <button className="margin-left-1" type="submit">Submit</button>
       </form>
     </div>
   )

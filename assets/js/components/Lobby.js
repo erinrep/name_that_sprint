@@ -20,14 +20,14 @@ const Lobby = (props) => {
         ev.preventDefault()
         props.history.push(`/game/${roomCode}`)
       }}>
-        <label>Room Code
+        <label>Room Code{" "}
           <input
             name="room_code"
             value={roomCode}
             onChange={(ev) => setRoomCode(ev.currentTarget.value)}>
           </input>
         </label>
-        <button type="submit">Join</button>
+        <button className="margin-left-1" type="submit">Join</button>
       </form>
     </div>
   )
