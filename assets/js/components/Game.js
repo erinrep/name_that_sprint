@@ -37,7 +37,7 @@ const Game = () => {
               sendIdea(idea)
               setIdea("")
             }}>
-              <input size={100} name="idea" aria-label="idea for sprint name" value={idea} onChange={(ev) => {
+              <input size={50} name="idea" aria-label="idea for sprint name" value={idea} onChange={(ev) => {
                 setIdea(ev.currentTarget.value)
               }}></input>
               <p><button type="submit">Submit Idea</button></p>
@@ -48,7 +48,7 @@ const Game = () => {
 
       <div>
         <h3>Ideas</h3>
-        <ul>
+        <ol className="ideas">
           {ideas.map(({name, votes}) => {
             return (
               <li key={name}>
@@ -71,7 +71,7 @@ const Game = () => {
                         -
                       </button>
                     }
-                    <ul aria-label={`Players who voted for ${name}`}>
+                    <ul className="votes" aria-label={`Players who voted for ${name}`}>
                       {votes.map((user, index) => <li key={`${name}:${user}:${index}`}>{user}</li>)}
                     </ul>
                   </>
@@ -79,7 +79,7 @@ const Game = () => {
               </li>
             )
           })}
-        </ul>
+        </ol>
       </div>
 
       {isLeader && (
