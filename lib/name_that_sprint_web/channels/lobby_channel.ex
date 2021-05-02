@@ -7,13 +7,13 @@ defmodule NameThatSprintWeb.LobbyChannel do
   end
 
   def handle_in("new_game", _params, socket) do
-    case new_game(socket) do
+    case new_game() do
       {:ok, result} -> {:reply, {:ok, result}, socket}
       {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
     end
   end
 
-  defp new_game(socket) do
+  defp new_game() do
     room_code =
       [:positive]
       |> System.unique_integer()

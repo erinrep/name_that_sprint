@@ -27,7 +27,7 @@ defmodule NameThatSprintWeb.GameChannel do
     {:noreply, socket}
   end
 
-  def terminate(reason, socket) do
+  def terminate(_reason, socket) do
     users =
       socket
       |> Presence.list()
