@@ -14,4 +14,5 @@ secret_key_base =
 
 config :name_that_sprint, NameThatSprintWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
+  ssl: true,
   secret_key_base: secret_key_base
