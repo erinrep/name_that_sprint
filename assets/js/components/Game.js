@@ -13,6 +13,7 @@ const Game = () => {
     votingMode,
     setVotingMode,
     sendVote,
+    getSuggestion,
     error
   } = useContext(GameChannelContext)
   const roomCode = topic.split(":")[1]
@@ -37,11 +38,23 @@ const Game = () => {
               sendIdea(idea)
               setIdea("")
             }}>
-              <input size={50} name="idea" aria-label="idea for sprint name" value={idea} onChange={(ev) => {
-                setIdea(ev.currentTarget.value)
-              }}></input>
+              <input
+                size={50}
+                name="idea"
+                aria-label="idea for sprint name"
+                value={idea}
+                onChange={(ev) => {
+                  setIdea(ev.currentTarget.value)
+                }}
+                required
+              />
               <p><button type="submit">Submit Idea</button></p>
             </form>
+            <button onClick={() => {
+              getSuggestion((suggestion) => {
+                setIdea(suggestion)
+              })
+            }}>Get Suggestion</button>
           </div>
         </>
       )}

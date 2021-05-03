@@ -2,7 +2,7 @@ defmodule NameThatSprintWeb.GameChannel do
   use Phoenix.Channel
   require Logger
 
-  alias NameThatSprint.{Presence, Game, GameSupervisor}
+  alias NameThatSprint.{Presence, Game, GameSupervisor, NameGenerator}
 
   def join("game:" <> room_code, %{"user_name" => user_name}, socket) do
     Logger.debug("> join #{inspect(room_code)}")
@@ -68,6 +68,10 @@ defmodule NameThatSprintWeb.GameChannel do
         {:reply, :ok, socket}
       {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
     end
+  end
+
+  def handle_in("get_suggestion", _params, socket) do
+    {:reply, {:ok, %{suggestion: NameGenerator.create()}}, socket}
   end
 
   defp assign_player(socket, user_name) do

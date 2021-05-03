@@ -45,8 +45,9 @@ const GameHandler = ({ match, history }) => {
           <input
             name="user_name"
             value={tempName}
-            onChange={(ev) => setTempName(ev.currentTarget.value)}>
-          </input>
+            onChange={(ev) => setTempName(ev.currentTarget.value)}
+            required
+          />
         </label>
         <button className="margin-left-1" type="submit">Submit</button>
       </form>

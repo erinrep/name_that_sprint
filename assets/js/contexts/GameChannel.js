@@ -46,6 +46,17 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     }
   }
 
+  const getSuggestion = (callback) => {
+    if (gameChannel) {
+      gameChannel.push('get_suggestion', {status: status})
+        .receive('ok', ({suggestion}) => callback(suggestion))
+        .receive('error', (resp) => console.error('suggestion error', resp))
+        .receive('timeout', () => console.error('suggestion timeout'))
+    } else {
+      console.error('Channel not connected')
+    }
+  }
+
   useEffect(() => {
     if (socket && !gameChannel) {
       const channel = socket.channel(topic, {user_name: userName})
@@ -116,6 +127,7 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
       setVotingMode: sendModeChange,
       votingMode: votingMode,
       sendVote: sendVote,
+      getSuggestion: getSuggestion,
       error: error
     }}>
       {children}
