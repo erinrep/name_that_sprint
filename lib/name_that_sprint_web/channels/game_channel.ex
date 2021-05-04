@@ -7,15 +7,15 @@ defmodule NameThatSprintWeb.GameChannel do
   def join("game:" <> room_code, %{"user_name" => user_name}, socket) do
     Logger.debug("> join #{inspect(room_code)}")
     socket
-    |> assign_player(user_name)
     |> check_that_game_exists(room_code)
+    |> assign_player(user_name)
     |> game_status()
   end
 
   def handle_info(:after_join, socket) do
     {:ok, _} =
       Presence.track(socket, socket.assigns.user, %{
-        online_at: inspect(System.system_time(:seconds))
+        online_at: inspect(System.system_time(:second))
       })
 
     users =
@@ -31,13 +31,17 @@ defmodule NameThatSprintWeb.GameChannel do
   end
 
   def terminate(_reason, socket) do
-    users =
-      socket
-      |> Presence.list()
-      |> Map.keys()
-      |> Enum.filter(&(&1 != socket.assigns.user))
+    case Map.get(socket.assigns, :user) do
+      nil -> {:noreply, socket}
+      user ->
+        users =
+          socket
+          |> Presence.list()
+          |> Map.keys()
+          |> Enum.filter(&(&1 != user))
 
-    broadcast!(socket, "player_left", %{users: users})
+        broadcast!(socket, "player_left", %{users: users})
+    end
   end
 
   def handle_in("idea", %{"name" => ""}, socket), do: {:reply, {:error, %{reason: :empty_name}}, socket}
@@ -78,6 +82,14 @@ defmodule NameThatSprintWeb.GameChannel do
     {:reply, {:ok, %{suggestion: NameGenerator.create()}}, socket}
   end
 
+  defp check_that_game_exists(socket, room_code) do
+    case GameSupervisor.pid_from_name(room_code) do
+      nil -> {:error, %{reason: :game_not_found}}
+      _pid -> socket
+    end
+  end
+
+  defp assign_player({:error, reason}, _user_name), do: {:error, reason}
   defp assign_player(socket, user_name) do
     player_exists? =
       socket
@@ -89,14 +101,6 @@ defmodule NameThatSprintWeb.GameChannel do
         send(self(), :after_join)
         assign(socket, :user, user_name)
       true -> {:error, %{reason: :name_in_use}}
-    end
-  end
-
-  defp check_that_game_exists({:error, reason}, _room_code), do: {:error, reason}
-  defp check_that_game_exists(socket, room_code) do
-    case GameSupervisor.pid_from_name(room_code) do
-      nil -> {:error, %{reason: :game_not_found}}
-      _pid -> socket
     end
   end
 
