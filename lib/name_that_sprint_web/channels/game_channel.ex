@@ -21,10 +21,10 @@ defmodule NameThatSprintWeb.GameChannel do
     users =
       socket
       |> Presence.list()
-      |> Enum.sort(fn {name1, info1}, {name2, info2} ->
+      |> Enum.sort(fn {_name1, info1}, {_name2, info2} ->
         Enum.at(info1.metas, 0).online_at < Enum.at(info2.metas, 0).online_at
       end)
-      |> Enum.map(fn {name, info} -> name end)
+      |> Enum.map(fn {name, _info} -> name end)
 
     broadcast!(socket, "player_joined", %{users: users})
     {:noreply, socket}
@@ -86,7 +86,7 @@ defmodule NameThatSprintWeb.GameChannel do
 
     case player_exists? do
       false ->
-        send(self, :after_join)
+        send(self(), :after_join)
         assign(socket, :user, user_name)
       true -> {:error, %{reason: :name_in_use}}
     end

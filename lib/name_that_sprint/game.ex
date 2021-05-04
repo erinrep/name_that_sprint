@@ -86,6 +86,10 @@ defmodule NameThatSprint.Game do
     {:noreply, state_data, @timeout}
   end
 
+  def handle_info(:timeout, state_data) do
+    {:stop, {:shutdown, :timeout}, state_data}
+  end
+
   defp get_idea(state_data, name) do
     case state_data
       |> Map.get(:ideas)
