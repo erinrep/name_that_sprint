@@ -21,7 +21,10 @@ defmodule NameThatSprintWeb.GameChannel do
     users =
       socket
       |> Presence.list()
-      |> Map.keys()
+      |> Enum.sort(fn {name1, info1}, {name2, info2} ->
+        Enum.at(info1.metas, 0).online_at < Enum.at(info2.metas, 0).online_at
+      end)
+      |> Enum.map(fn {name, info} -> name end)
 
     broadcast!(socket, "player_joined", %{users: users})
     {:noreply, socket}
@@ -37,7 +40,8 @@ defmodule NameThatSprintWeb.GameChannel do
     broadcast!(socket, "player_left", %{users: users})
   end
 
-  def handle_in("idea", %{"name" => name}, socket) do
+  def handle_in("idea", %{"name" => ""}, socket), do: {:reply, {:error, %{reason: :empty_name}}, socket}
+  def handle_in("idea", %{"name" => name}, socket) when is_binary(name) do
     case Game.add_idea(via(socket.topic), name) do
       {:ok, idea} ->
         broadcast!(socket, "idea_received", idea)
