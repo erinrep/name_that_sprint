@@ -1,7 +1,6 @@
 defmodule NameThatSprint.GameSupervisor do
   use DynamicSupervisor
   alias NameThatSprint.Game
-  require Logger
 
   def start_link(_options), do: DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
 
@@ -10,7 +9,6 @@ defmodule NameThatSprint.GameSupervisor do
   end
 
   def start_game(name) do
-    Logger.debug("> start_game #{inspect(name)}")
     spec = %{id: Game, start: {Game, :start_link, [name]}}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end

@@ -1,11 +1,9 @@
 defmodule NameThatSprintWeb.GameChannel do
   use Phoenix.Channel
-  require Logger
 
   alias NameThatSprint.{Presence, Game, GameSupervisor, NameGenerator}
 
   def join("game:" <> room_code, %{"user_name" => user_name}, socket) do
-    Logger.debug("> join #{inspect(room_code)}")
     socket
     |> check_that_game_exists(room_code)
     |> assign_player(user_name)
