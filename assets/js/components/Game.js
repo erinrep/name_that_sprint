@@ -6,9 +6,9 @@ const Game = () => {
   const { 
     userName,
     sendIdea,
-    players,
-    topic,
-    ideas,
+    players = [],
+    topic = "",
+    ideas = [],
     isLeader,
     votingMode,
     setVotingMode,

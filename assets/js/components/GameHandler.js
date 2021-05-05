@@ -1,9 +1,7 @@
-import React, { createContext, useState } from 'react'
+import React, { useState } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import GameChannel from '../contexts/GameChannel'
 import Game from '../components/Game'
-
-export const GameChannelContext = createContext({})
 
 const GameHandler = ({ match, history }) => {
   const [tempName, setTempName] = useState("")
