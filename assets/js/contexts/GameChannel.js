@@ -15,7 +15,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const sendIdea = (name) => {
     if (gameChannel) {
       gameChannel.push("idea", {name: name})
-        .receive("ok", (resp) => console.log("idea success", resp))
         .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
         .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
     } else {
@@ -26,7 +25,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const sendModeChange = (status) => {
     if (gameChannel) {
       gameChannel.push("set_voting_mode", {status: status})
-        .receive("ok", () => console.log("mode success"))
         .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
         .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
     } else {
@@ -37,7 +35,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const sendVote = (name, add = true) => {
     if (gameChannel) {
       gameChannel.push(add ? "add_vote" : "remove_vote", {user: userName, vote: name})
-        .receive("ok", () => console.log("vote success"))
         .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
         .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
     } else {
@@ -90,7 +87,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
 
       gameChannel.off("vote_updated")
       gameChannel.on("vote_updated", (item) => {
-        console.log("vote updated", item)
         setIdeas(ideas.map((idea) => {
           return idea.name === item.name ? item : idea
         }))
