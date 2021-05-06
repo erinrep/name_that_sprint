@@ -23,7 +23,7 @@ defmodule NameThatSprintWeb.LobbyChannel do
       {:ok, _game} ->
         {:ok, %{room_code: room_code}}
       {:error, {:already_started, _pid}} ->
-        {:error, "Game already started"}
+        {:error, :game_already_started}
       error -> error
     end
   end

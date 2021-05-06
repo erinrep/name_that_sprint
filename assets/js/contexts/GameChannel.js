@@ -13,44 +13,28 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const [votingMode, setVotingMode] = useState(false)
 
   const sendIdea = (name) => {
-    if (gameChannel) {
-      gameChannel.push("idea", {name: name})
-        .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
-        .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
-    } else {
-      console.error("Channel not connected")
-    }
+    gameChannel && gameChannel.push("idea", {name: name})
+      .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
+      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
   const sendModeChange = (status) => {
-    if (gameChannel) {
-      gameChannel.push("set_voting_mode", {status: status})
-        .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
-        .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
-    } else {
-      console.error("Channel not connected")
-    }
+    gameChannel && gameChannel.push("set_voting_mode", {status: status})
+      .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
+      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
   const sendVote = (name, add = true) => {
-    if (gameChannel) {
-      gameChannel.push(add ? "add_vote" : "remove_vote", {user: userName, vote: name})
-        .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
-        .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
-    } else {
-      console.error("Channel not connected")
-    }
+    gameChannel && gameChannel.push(add ? "add_vote" : "remove_vote", {user: userName, vote: name})
+      .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
+      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
   const getSuggestion = (callback) => {
-    if (gameChannel) {
-      gameChannel.push("get_suggestion", {status: status})
-        .receive("ok", ({suggestion}) => callback(suggestion))
-        .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
-        .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
-    } else {
-      console.error("Channel not connected")
-    }
+    gameChannel && gameChannel.push("get_suggestion", {status: status})
+      .receive("ok", ({suggestion}) => callback(suggestion))
+      .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
+      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
   useEffect(() => {

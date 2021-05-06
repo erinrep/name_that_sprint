@@ -1,33 +1,27 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
+import { toast } from "react-toastify"
 import { SocketContext } from "./Socket"
+import { errorCodes, prettyError } from "../helpers"
 
 export const LobbyChannelContext = createContext({})
 
 const LobbyChannel = ({ children }) => {
   const socket = useContext(SocketContext)
   const [lobbyChannel, setLobbyChannel] = useState(null)
-  const [error, setError] = useState("")
   const topic = "lobby:default"
 
   const startGame = (callback) => {
-    if (lobbyChannel) {
-      setError("")
-      lobbyChannel.push("new_game")
-        .receive("ok", (resp) => callback(resp.room_code))
-        .receive("error", (resp) => setError(`Error: ${resp.reason}`))
-        .receive("timeout", () => console.error("timeout creating game"))
-    } else {
-      console.error("Channel not connected")
-    }
+    lobbyChannel && lobbyChannel.push("new_game")
+      .receive("ok", ({ room_code }) => callback(room_code))
+      .receive("error", ({ reason }) => toast.error(prettyError(reason), { position: "top-center" }))
+      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
   useEffect(() => {
     if (socket && !lobbyChannel) {
       const channel = socket.channel(topic)
-
-      console.debug("Joining channel", topic)
       channel.join().receive("error", () => {
-        setError("Error: Could not join Lobby")
+        toast.error("Error: Could not join Lobby", { position: "top-center" })
       })
 
       setLobbyChannel(channel)
@@ -35,7 +29,6 @@ const LobbyChannel = ({ children }) => {
 
     return () => {
       if (lobbyChannel) {
-        console.debug("Leaving channel", topic)
         lobbyChannel.leave()
         setLobbyChannel(null)
       }
@@ -46,7 +39,6 @@ const LobbyChannel = ({ children }) => {
     <LobbyChannelContext.Provider value={{
       startGame: startGame
     }}>
-      {error && <p className="error">{error}</p>}
       {children}
     </LobbyChannelContext.Provider>
   )

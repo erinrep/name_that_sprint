@@ -1,5 +1,6 @@
 const errorCodes = {
   duplicateIdea: "duplicate_name",
+  gameAlreadyStarted: "game_already_started",
   gameNotFound: "game_not_found",
   ideaNotFound: "idea_not_found",
   nameInUse: "name_in_use",
@@ -11,6 +12,7 @@ const errorCodes = {
 const prettyError = (errorCode) => {
   switch (errorCode) {
     case errorCodes.duplicateIdea: return "That idea has already been submitted."
+    case errorCodes.gameAlreadyStarted: return "Game already started."
     case errorCodes.gameNotFound: return "Game does not exist."
     case errorCodes.ideaNotFound: return "That idea doesn't even exist!"
     case errorCodes.nameInUse: return "User name taken."
