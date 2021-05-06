@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { SocketContext } from './Socket'
+import React, { createContext, useContext, useEffect, useState } from "react"
+import { SocketContext } from "./Socket"
 
 export const LobbyChannelContext = createContext({})
 
@@ -7,17 +7,17 @@ const LobbyChannel = ({ children }) => {
   const socket = useContext(SocketContext)
   const [lobbyChannel, setLobbyChannel] = useState(null)
   const [error, setError] = useState("")
-  const topic = "lobby:default";
+  const topic = "lobby:default"
 
   const startGame = (callback) => {
     if (lobbyChannel) {
       setError("")
-      lobbyChannel.push('new_game')
-        .receive('ok', (resp) => callback(resp.room_code))
-        .receive('error', (resp) => setError(`Error: ${resp.reason}`))
-        .receive('timeout', () => console.error('timeout creating game'))
+      lobbyChannel.push("new_game")
+        .receive("ok", (resp) => callback(resp.room_code))
+        .receive("error", (resp) => setError(`Error: ${resp.reason}`))
+        .receive("timeout", () => console.error("timeout creating game"))
     } else {
-      console.error('Channel not connected')
+      console.error("Channel not connected")
     }
   }
 
@@ -25,8 +25,8 @@ const LobbyChannel = ({ children }) => {
     if (socket && !lobbyChannel) {
       const channel = socket.channel(topic)
 
-      console.debug('Joining channel', topic)
-      channel.join().receive('error', () => {
+      console.debug("Joining channel", topic)
+      channel.join().receive("error", () => {
         setError("Error: Could not join Lobby")
       })
 
@@ -35,7 +35,7 @@ const LobbyChannel = ({ children }) => {
 
     return () => {
       if (lobbyChannel) {
-        console.debug('Leaving channel', topic)
+        console.debug("Leaving channel", topic)
         lobbyChannel.leave()
         setLobbyChannel(null)
       }

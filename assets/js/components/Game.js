@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react'
-import { GameChannelContext } from '../contexts/GameChannel'
+import React, { useContext, useState } from "react"
+import { GameChannelContext } from "../contexts/GameChannel"
 
 const Game = () => {
   const [idea, setIdea] = useState("")

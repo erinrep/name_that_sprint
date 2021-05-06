@@ -1,9 +1,9 @@
-import React from 'react'
-import { Switch, Route } from 'react-router-dom'
-import Lobby from './components/Lobby'
-import GameHandler from './components/GameHandler'
-import Socket from './contexts/Socket'
-import LobbyChannel from './contexts/LobbyChannel'
+import React from "react"
+import { Switch, Route } from "react-router-dom"
+import Lobby from "./components/Lobby"
+import GameHandler from "./components/GameHandler"
+import Socket from "./contexts/Socket"
+import LobbyChannel from "./contexts/LobbyChannel"
 
 const Routes = () => {
   return (
@@ -17,8 +17,8 @@ const Routes = () => {
             <Lobby/>
           </LobbyChannel>
         </Route>
-    </Switch>
-  </Socket>
+      </Switch>
+    </Socket>
   )
 }
 

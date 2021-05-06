@@ -1,13 +1,10 @@
-import css from "../css/app.css"
-import React from 'react'
-import ReactDOM from 'react-dom'
-import {
-  BrowserRouter as Router,
-  Link
-} from 'react-router-dom'
-import { ToastContainer } from 'react-toastify';
+import _css from "../css/app.css"
+import React from "react"
+import ReactDOM from "react-dom"
+import { BrowserRouter as Router } from "react-router-dom"
+import { ToastContainer } from "react-toastify"
 
-import Routes from './Routes'
+import Routes from "./Routes"
 
 export default function App() {
   return (
@@ -21,4 +18,4 @@ export default function App() {
   )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, document.getElementById("root"))

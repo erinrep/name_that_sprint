@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { withRouter } from 'react-router-dom'
-import { toast } from 'react-toastify';
-import GameChannel from '../contexts/GameChannel'
-import Game from '../components/Game'
-import { errorCodes, prettyError } from '../helpers'
+import React, { useState } from "react"
+import { withRouter } from "react-router-dom"
+import { toast } from "react-toastify"
+import GameChannel from "../contexts/GameChannel"
+import Game from "../components/Game"
+import { errorCodes, prettyError } from "../helpers"
 
 const GameHandler = ({ match, history }) => {
   const [tempName, setTempName] = useState("")
@@ -25,7 +25,7 @@ const GameHandler = ({ match, history }) => {
         if (error == errorCodes.gameNotFound) {
           history.replace("/")
         }
-        toast.error(prettyError(error), { position: 'top-center' })
+        toast.error(prettyError(error), { position: "top-center" })
       }}
     >
       <Game/>
