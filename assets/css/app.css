@@ -1,5 +1,7 @@
 /* This file is for your main application css. */
 
+@import '../node_modules/react-toastify/dist/ReactToastify.css';
+
 #root {
   max-width: 1200px;
   margin: 0 auto;

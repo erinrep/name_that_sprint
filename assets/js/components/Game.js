@@ -13,16 +13,13 @@ const Game = () => {
     votingMode,
     setVotingMode,
     sendVote,
-    getSuggestion,
-    error
+    getSuggestion
   } = useContext(GameChannelContext)
   const roomCode = topic.split(":")[1]
 
   return (
     <div>
       <h2>Room Code: {roomCode}</h2>
-
-      {error && <p>{error}</p>}
 
       {votingMode ? (
         <p>Vote for your favorites</p>

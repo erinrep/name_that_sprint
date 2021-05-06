@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import GameChannel from '../contexts/GameChannel'
 import Game from '../components/Game'
+import { errorCodes, prettyError } from '../helpers'
 
 const GameHandler = ({ match, history }) => {
   const [tempName, setTempName] = useState("")
   const [userName, setUserName] = useState("")
-  const [error, setError] = useState("")
   const regex = /^\d+$/
   if (!regex.test(match.params.code)) {
     history.replace("/")
@@ -14,30 +15,26 @@ const GameHandler = ({ match, history }) => {
   }
   const topic = `game:${match.params.code}`
 
-  return error == "game_not_found" ? (
-    <div>
-      <p>Error: Game not found</p>
-      <Link to="/">Go to lobby</Link>
-    </div>
-  ) : userName ? (
+  return userName ? (
     <GameChannel
       topic={topic}
       userName={userName}
       onJoinError={(error) => {
         setUserName("")
         setTempName("")
-        setError(error)
+        if (error == errorCodes.gameNotFound) {
+          history.replace("/")
+        }
+        toast.error(prettyError(error), { position: 'top-center' })
       }}
     >
       <Game/>
     </GameChannel>
   ) : (
     <div>
-      {error && <p>Error: name in use</p>}
       <form onSubmit={(ev) => {
         ev.preventDefault()
         setUserName(tempName)
-        setError("")
       }}>
         <label>What is your name?{" "}
           <input

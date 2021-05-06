@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify';
 import { SocketContext } from './Socket'
+import { errorCodes, prettyError } from '../helpers'
 
 export const GameChannelContext = createContext({})
 
@@ -9,15 +11,13 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const [players, setPlayers] = useState([])
   const [ideas, setIdeas] = useState([])
   const [votingMode, setVotingMode] = useState(false)
-  const [error, setError] = useState("")
 
   const sendIdea = (name) => {
-    setError("")
     if (gameChannel) {
       gameChannel.push('idea', {name: name})
         .receive('ok', (resp) => console.log('idea success', resp))
-        .receive('error', ({reason}) => setError(reason))
-        .receive('timeout', () => console.error('idea timeout'))
+        .receive('error', ({reason}) => toast.error(prettyError(reason), { position: 'top-center' }))
+        .receive('timeout', () => toast.error(prettyError(errorCodes.timeout), { position: 'top-center' }))
     } else {
       console.error('Channel not connected')
     }
@@ -27,20 +27,19 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     if (gameChannel) {
       gameChannel.push('set_voting_mode', {status: status})
         .receive('ok', () => console.log('mode success'))
-        .receive('error', (resp) => console.error('mode error', resp))
-        .receive('timeout', () => console.error('mode timeout'))
+        .receive('error', () => toast.error(prettyError(), { position: 'top-center' }))
+        .receive('timeout', () => toast.error(prettyError(errorCodes.timeout), { position: 'top-center' }))
     } else {
       console.error('Channel not connected')
     }
   }
 
   const sendVote = (name, add = true) => {
-    setError("")
     if (gameChannel) {
       gameChannel.push(add ? 'add_vote' : 'remove_vote', {user: userName, vote: name})
         .receive('ok', () => console.log('vote success'))
-        .receive('error', ({reason}) => setError(reason))
-        .receive('timeout', () => console.error('vote timeout'))
+        .receive('error', ({reason}) => toast.error(prettyError(reason), { position: 'top-center' }))
+        .receive('timeout', () => toast.error(prettyError(errorCodes.timeout), { position: 'top-center' }))
     } else {
       console.error('Channel not connected')
     }
@@ -50,8 +49,8 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     if (gameChannel) {
       gameChannel.push('get_suggestion', {status: status})
         .receive('ok', ({suggestion}) => callback(suggestion))
-        .receive('error', (resp) => console.error('suggestion error', resp))
-        .receive('timeout', () => console.error('suggestion timeout'))
+        .receive('error', () => toast.error(prettyError(), { position: 'top-center' }))
+        .receive('timeout', () => toast.error(prettyError(errorCodes.timeout), { position: 'top-center' }))
     } else {
       console.error('Channel not connected')
     }
@@ -61,38 +60,21 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     if (socket && !gameChannel) {
       const channel = socket.channel(topic, {user_name: userName})
 
-      channel.on('player_joined', ({users}) => {
-        console.log("player joined", users)
-        setPlayers(users)
-      })
-
-      channel.on('player_left', ({users}) => {
-        console.log("player left", users)
-        setPlayers(users)
-      })
-
-      channel.on('voting_mode_updated', ({status}) => {
-        console.log("voting mode?", status)
-        setVotingMode(status)
-      })
-
-      console.debug('Joining channel', topic)
+      channel.on('player_joined', ({users}) => setPlayers(users))
+      channel.on('player_left', ({users}) => setPlayers(users))
+      channel.on('voting_mode_updated', ({status}) => setVotingMode(status))
       channel.join()
         .receive('ok', ({ideas, voting_mode}) => {
           setIdeas(ideas)
           setVotingMode(voting_mode)
         })
-        .receive('error', (error) => {
-          console.error('GameChannel join failed', topic, error)
-          onJoinError(error.reason)
-        })
+        .receive('error', (error) => onJoinError(error.reason))
 
       setGameChannel(channel)
     }
 
     return () => {
       if (gameChannel) {
-        console.debug('Leaving channel', topic)
         gameChannel.leave()
         setGameChannel(null)
       }
@@ -127,8 +109,7 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
       setVotingMode: sendModeChange,
       votingMode: votingMode,
       sendVote: sendVote,
-      getSuggestion: getSuggestion,
-      error: error
+      getSuggestion: getSuggestion
     }}>
       {children}
     </GameChannelContext.Provider>
