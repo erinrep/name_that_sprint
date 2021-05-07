@@ -36,7 +36,7 @@ const GameHandler = ({ match, history }) => {
         ev.preventDefault()
         setUserName(tempName)
       }}>
-        <label>What is your name?{" "}
+        <label>What should we call you?{" "}
           <input
             name="user_name"
             value={tempName}

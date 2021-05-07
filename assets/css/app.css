@@ -3,8 +3,15 @@
 @import '../node_modules/react-toastify/dist/ReactToastify.css';
 
 #root {
+  font-family: Helvetica;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .margin-left-1 {
