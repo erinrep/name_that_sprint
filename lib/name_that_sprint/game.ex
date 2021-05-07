@@ -1,6 +1,5 @@
 defmodule NameThatSprint.Game do
   use GenServer, start: {__MODULE__, :start_link, []}, restart: :transient
-  require Logger
 
   @timeout 60 * 60 * 24 * 1000
   @max_votes 3
@@ -15,12 +14,17 @@ defmodule NameThatSprint.Game do
     {:ok, %{name: name, ideas: []}}
   end
 
+  def terminate(:shutdown, name) do
+    :ets.delete(:game_state, name)
+    :ok
+  end
+  def terminate(_reason, _name), do: :ok
+
   def status(game) do
     GenServer.call(game, :status)
   end
 
   def add_idea(game, name) do
-    Logger.debug("> add_idea #{inspect(name)}")
     GenServer.call(game, {:add_idea, name})
   end
 
