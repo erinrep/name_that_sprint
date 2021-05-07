@@ -80,6 +80,15 @@ defmodule NameThatSprintWeb.GameChannel do
     {:reply, {:ok, %{suggestion: NameGenerator.create()}}, socket}
   end
 
+  def handle_in("declare_winner", _params, socket) do
+    case Game.declare_winner(via(socket.topic)) do
+      {:ok, winner} -> 
+        broadcast!(socket, "winner_declared", %{winner: winner})
+        {:reply, :ok, socket}
+      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+    end
+  end
+
   defp check_that_game_exists(socket, room_code) do
     case GameSupervisor.pid_from_name(room_code) do
       nil -> {:error, %{reason: :game_not_found}}

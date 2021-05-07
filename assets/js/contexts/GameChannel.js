@@ -11,6 +11,7 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const [players, setPlayers] = useState([])
   const [ideas, setIdeas] = useState([])
   const [votingMode, setVotingMode] = useState(false)
+  const [winner, setWinner] = useState("")
 
   const sendIdea = (name) => {
     gameChannel && gameChannel.push("idea", {name: name})
@@ -37,6 +38,12 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
       .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
+  const declareWinner = () => {
+    gameChannel && gameChannel.push("declare_winner", {status: status})
+      .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
+      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+  }
+
   useEffect(() => {
     if (socket && !gameChannel) {
       const channel = socket.channel(topic, {user_name: userName})
@@ -44,10 +51,12 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
       channel.on("player_joined", ({users}) => setPlayers(users))
       channel.on("player_left", ({users}) => setPlayers(users))
       channel.on("voting_mode_updated", ({status}) => setVotingMode(status))
+      channel.on("winner_declared", ({winner}) => setWinner(winner))
       channel.join()
-        .receive("ok", ({ideas, voting_mode}) => {
+        .receive("ok", ({ideas, voting_mode, winner}) => {
           setIdeas(ideas)
           setVotingMode(voting_mode)
+          setWinner(winner)
         })
         .receive("error", (error) => onJoinError(error.reason))
 
@@ -89,7 +98,9 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
       setVotingMode: sendModeChange,
       votingMode: votingMode,
       sendVote: sendVote,
-      getSuggestion: getSuggestion
+      getSuggestion: getSuggestion,
+      declareWinner: declareWinner,
+      winner: winner
     }}>
       {children}
     </GameChannelContext.Provider>

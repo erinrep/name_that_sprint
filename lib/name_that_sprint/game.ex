@@ -40,6 +40,10 @@ defmodule NameThatSprint.Game do
     GenServer.call(game, {:remove_vote, idea, user})
   end
 
+  def declare_winner(game) do
+    GenServer.call(game, :declare_winner)
+  end
+
   def handle_call(:status, _from, state_data) do
     reply_success(state_data, {:ok, state_data})
   end
@@ -79,10 +83,25 @@ defmodule NameThatSprint.Game do
     |> update_votes(-1)
   end
 
+  def handle_call(:declare_winner, _from, state_data) do
+    case state_data
+    |> Map.get(:ideas)
+    |> Enum.map(&({&1.name, Enum.count(&1.votes)}))
+    |> Enum.sort(fn {_name1, num_votes1}, {_name2, num_votes2} -> 
+      num_votes1 > num_votes2
+    end)
+    |> Enum.at(0) do
+      nil -> {:reply, {:error, :no_ideas}, state_data, @timeout}
+      {winner, _votes} ->
+        state_data = Map.put(state_data, :winner, winner)
+        reply_success(state_data, {:ok, winner}) 
+    end
+  end
+
   def handle_info({:set_state, {name}}, _state_data) do
     state_data =
       case :ets.lookup(:game_state, name) do
-        [] -> %{name: name, ideas: [], voting_mode: false, vote_tracking: %{}}
+        [] -> %{name: name, ideas: [], voting_mode: false, vote_tracking: %{}, winner: nil}
         [{_key, state}] -> state
       end
 

@@ -40,3 +40,12 @@ header{
 .votes li:not(:last-child)::after {
   content: ", ";
 }
+
+.results p {
+  font-size: 1.5rem;
+}
+
+.results ul {
+  list-style: none;
+  padding-left: 0;
+}

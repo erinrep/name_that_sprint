@@ -4,9 +4,10 @@ const errorCodes = {
   gameNotFound: "game_not_found",
   ideaNotFound: "idea_not_found",
   nameInUse: "name_in_use",
-  noVotesLest: "no_votes_left",
+  noIdeas: "no_ideas",
+  noVotesLeft: "no_votes_left",
   timeout: "timeout",
-  voteNotFound: "vote_not_found",
+  voteNotFound: "vote_not_found"
 }
 
 const prettyError = (errorCode) => {
@@ -16,14 +17,23 @@ const prettyError = (errorCode) => {
     case errorCodes.gameNotFound: return "Game does not exist."
     case errorCodes.ideaNotFound: return "That idea doesn't even exist!"
     case errorCodes.nameInUse: return "User name taken."
-    case errorCodes.noVotesLest: return "You are out of votes."
+    case errorCodes.noIdeas: return "No ideas have been submitted."
+    case errorCodes.noVotesLeft: return "You are out of votes."
     case errorCodes.timeout: return "Your request timed out."
     case errorCodes.voteNotFound: return "You haven't voted for that idea."
     default: return "Unknown error."
   }
 }
 
+const maybeAddAnS = (word, num) => {
+  if (num === 1) {
+    return word
+  }
+  return `${word}s`
+}
+
 export {
   errorCodes,
+  maybeAddAnS,
   prettyError
 }
