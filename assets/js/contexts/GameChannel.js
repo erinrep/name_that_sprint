@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useEffect, useRef, useState } from "react"
 import { toast } from "react-toastify"
 import { SocketContext } from "./Socket"
 import { errorCodes, prettyError } from "../helpers"
@@ -12,6 +12,7 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const [ideas, setIdeas] = useState([])
   const [votingMode, setVotingMode] = useState(false)
   const [winner, setWinner] = useState("")
+  const ideaRef = useRef([])
 
   const sendIdea = (name) => {
     gameChannel && gameChannel.push("idea", {name: name})
@@ -50,11 +51,22 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
 
       channel.on("player_joined", ({users}) => setPlayers(users))
       channel.on("player_left", ({users}) => setPlayers(users))
+      channel.on("idea_received", (idea) => {
+        ideaRef.current = [...ideaRef.current, idea]
+        setIdeas(ideaRef.current)
+      })
       channel.on("voting_mode_updated", ({status}) => setVotingMode(status))
+      channel.on("vote_updated", (item) => {
+        ideaRef.current = ideaRef.current.map((idea) => {
+          return idea.name === item.name ? item : idea
+        })
+        setIdeas(ideaRef.current)
+      })
       channel.on("winner_declared", ({winner}) => setWinner(winner))
       channel.join()
         .receive("ok", ({ideas, voting_mode, winner}) => {
           setIdeas(ideas)
+          ideaRef.current = ideas
           setVotingMode(voting_mode)
           setWinner(winner)
         })
@@ -70,22 +82,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
       }
     }
   }, [socket, gameChannel])
-
-  useEffect(() => {
-    if (gameChannel) {
-      gameChannel.off("idea_received")
-      gameChannel.on("idea_received", (idea) => {
-        setIdeas([...ideas, idea])
-      })
-
-      gameChannel.off("vote_updated")
-      gameChannel.on("vote_updated", (item) => {
-        setIdeas(ideas.map((idea) => {
-          return idea.name === item.name ? item : idea
-        }))
-      })
-    }
-  }, [ideas])
 
   return (
     <GameChannelContext.Provider value={{
