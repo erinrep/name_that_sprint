@@ -33,14 +33,14 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   }
 
   const getSuggestion = (callback) => {
-    gameChannel && gameChannel.push("get_suggestion", {status: status})
+    gameChannel && gameChannel.push("get_suggestion")
       .receive("ok", ({suggestion}) => callback(suggestion))
       .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
       .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
 
   const declareWinner = () => {
-    gameChannel && gameChannel.push("declare_winner", {status: status})
+    gameChannel && gameChannel.push("declare_winner")
       .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
       .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
   }
