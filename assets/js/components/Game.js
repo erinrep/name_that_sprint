@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react"
 import { GameChannelContext } from "../contexts/GameChannel"
 import { maybeAddAnS } from "../helpers"
+import LeaderActions from "./LeaderActions"
 
 const Game = () => {
   const [idea, setIdea] = useState("")
@@ -118,31 +119,12 @@ const Game = () => {
             {isLeader && (
               <div>
                 <h3>Settings</h3>
-                <label>Entry Mode
-                  <input
-                    type="radio"
-                    name="mode"
-                    checked={!votingMode}
-                    onChange={(ev) => setVotingMode(false)}
-                  />
-                </label>
-                <br/>
-                <label>Voting Mode
-                  <input
-                    type="radio"
-                    name="mode"
-                    checked={votingMode}
-                    onChange={(ev) => setVotingMode(true)}
-                  />
-                </label>
-                <br />
-                {!!ideas.find(idea => idea.votes.length) && (
-                  <p>
-                    <button onClick={() => {
-                      declareWinner()
-                    }}>Declare Winner</button>
-                  </p>
-                )}
+                <LeaderActions
+                  ideas={ideas}
+                  votingMode={votingMode}
+                  setVotingMode={setVotingMode}
+                  declareWinner={declareWinner}
+                />
               </div>
             )}
           </>
