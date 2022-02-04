@@ -1,27 +1,28 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { toast } from "react-toastify"
 import { SocketContext } from "./Socket"
 import { errorCodes, prettyError } from "../helpers"
+import { useSnackbar } from "notistack"
 
 export const LobbyChannelContext = createContext({})
 
 const LobbyChannel = ({ children }) => {
   const socket = useContext(SocketContext)
   const [lobbyChannel, setLobbyChannel] = useState(null)
+  const { enqueueSnackbar } = useSnackbar()
   const topic = "lobby:default"
 
   const startGame = (callback) => {
     lobbyChannel && lobbyChannel.push("new_game")
       .receive("ok", ({ room_code }) => callback(room_code))
-      .receive("error", ({ reason }) => toast.error(prettyError(reason), { position: "top-center" }))
-      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+      .receive("error", ({ reason }) => enqueueSnackbar(prettyError(reason), { variant: "error" }))
+      .receive("timeout", () => enqueueSnackbar(prettyError(errorCodes.timeout), { variant: "error" }))
   }
 
   useEffect(() => {
     if (socket && !lobbyChannel) {
       const channel = socket.channel(topic)
       channel.join().receive("error", () => {
-        toast.error("Error: Could not join Lobby", { position: "top-center" })
+        enqueueSnackbar("Error: Could not join Lobby", { variant: "error" })
       })
 
       setLobbyChannel(channel)

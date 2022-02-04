@@ -1,7 +1,5 @@
 /* This file is for your main application css. */
 
-@import '../node_modules/react-toastify/dist/ReactToastify.css';
-
 #root {
   font-family: Helvetica;
   max-width: 1200px;

@@ -1,13 +1,14 @@
 import React, { useState } from "react"
 import { withRouter } from "react-router-dom"
-import { toast } from "react-toastify"
 import GameChannel from "../contexts/GameChannel"
 import Game from "../components/Game"
 import { errorCodes, prettyError } from "../helpers"
+import { useSnackbar } from "notistack"
 
 const GameHandler = ({ match, history }) => {
   const [tempName, setTempName] = useState("")
   const [userName, setUserName] = useState("")
+  const { enqueueSnackbar } = useSnackbar()
   const regex = /^\d+$/
   if (!regex.test(match.params.code)) {
     history.replace("/")
@@ -25,7 +26,7 @@ const GameHandler = ({ match, history }) => {
         if (error == errorCodes.gameNotFound) {
           history.replace("/")
         }
-        toast.error(prettyError(error), { position: "top-center" })
+        enqueueSnackbar(prettyError(error), { variant: "error" })
       }}
     >
       <Game/>
