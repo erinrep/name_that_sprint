@@ -4,6 +4,7 @@ import GameChannel from "../contexts/GameChannel"
 import Game from "../components/Game"
 import { errorCodes, prettyError } from "../helpers"
 import { useSnackbar } from "notistack"
+import { Box, Button, Stack, TextField, Toolbar } from "@mui/material"
 
 const GameHandler = ({ match, history }) => {
   const [tempName, setTempName] = useState("")
@@ -32,22 +33,25 @@ const GameHandler = ({ match, history }) => {
       <Game/>
     </GameChannel>
   ) : (
-    <div>
+    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Toolbar />
       <form onSubmit={(ev) => {
         ev.preventDefault()
         setUserName(tempName)
       }}>
-        <label>What should we call you?{" "}
-          <input
-            name="user_name"
+        <Stack spacing={2} direction="row">
+          <TextField
+            id="user_name"
+            label="Your name"
+            variant="outlined"
             value={tempName}
             onChange={(ev) => setTempName(ev.currentTarget.value)}
             required
           />
-        </label>
-        <button className="margin-left-1" type="submit">Submit</button>
+          <Button variant="contained" type="submit">Join</Button>
+        </Stack>
       </form>
-    </div>
+    </Box>
   )
 }
 
