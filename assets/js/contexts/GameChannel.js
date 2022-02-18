@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react"
-import { toast } from "react-toastify"
 import { SocketContext } from "./Socket"
 import { errorCodes, prettyError } from "../helpers"
+import { useSnackbar } from "notistack"
 
 export const GameChannelContext = createContext({})
 
@@ -13,43 +13,49 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const [votingMode, setVotingMode] = useState(false)
   const [winner, setWinner] = useState("")
   const ideaRef = useRef([])
+  const { enqueueSnackbar } = useSnackbar()
 
   const sendIdea = (name) => {
     gameChannel && gameChannel.push("idea", {name: name})
-      .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
-      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+      .receive("error", ({reason}) => enqueueSnackbar(prettyError(reason), { variant: "error" }))
+      .receive("timeout", () => enqueueSnackbar(prettyError(prettyError(errorCodes.timeout)), { variant: "error" }))
   }
 
   const sendModeChange = (status) => {
     gameChannel && gameChannel.push("set_voting_mode", {status: status})
-      .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
-      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+      .receive("error", () => enqueueSnackbar(prettyError(), { variant: "error" }))
+      .receive("timeout", () => enqueueSnackbar(prettyError(prettyError(errorCodes.timeout)), { variant: "error" }))
   }
 
   const sendVote = (name, add = true) => {
     gameChannel && gameChannel.push(add ? "add_vote" : "remove_vote", {user: userName, vote: name})
-      .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
-      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+      .receive("error", ({reason}) => enqueueSnackbar(prettyError(reason), { variant: "error" }))
+      .receive("timeout", () => enqueueSnackbar(prettyError(prettyError(errorCodes.timeout)), { variant: "error" }))
   }
 
   const getSuggestion = (callback) => {
     gameChannel && gameChannel.push("get_suggestion")
       .receive("ok", ({suggestion}) => callback(suggestion))
-      .receive("error", () => toast.error(prettyError(), { position: "top-center" }))
-      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+      .receive("error", () => enqueueSnackbar(prettyError(), { variant: "error" }))
+      .receive("timeout", () => enqueueSnackbar(prettyError(prettyError(errorCodes.timeout)), { variant: "error" }))
   }
 
   const declareWinner = () => {
     gameChannel && gameChannel.push("declare_winner")
-      .receive("error", ({reason}) => toast.error(prettyError(reason), { position: "top-center" }))
-      .receive("timeout", () => toast.error(prettyError(errorCodes.timeout), { position: "top-center" }))
+      .receive("error", ({reason}) => enqueueSnackbar(prettyError(reason), { variant: "error" }))
+      .receive("timeout", () => enqueueSnackbar(prettyError(prettyError(errorCodes.timeout)), { variant: "error" }))
   }
 
   useEffect(() => {
     if (socket && !gameChannel) {
       const channel = socket.channel(topic, {user_name: userName})
 
-      channel.on("player_joined", ({users}) => setPlayers(users))
+      channel.on("player_joined", ({users, new_user}) => {
+        setPlayers(users)
+        if (new_user !== userName) {
+          enqueueSnackbar(`${new_user} joined`, { variant: "info" })
+        }
+      })
       channel.on("player_left", ({users}) => setPlayers(users))
       channel.on("idea_received", (idea) => {
         ideaRef.current = [...ideaRef.current, idea]

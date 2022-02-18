@@ -1,13 +1,15 @@
 import React, { useState } from "react"
 import { withRouter } from "react-router-dom"
-import { toast } from "react-toastify"
 import GameChannel from "../contexts/GameChannel"
 import Game from "../components/Game"
 import { errorCodes, prettyError } from "../helpers"
+import { useSnackbar } from "notistack"
+import { Box, Button, Stack, TextField, Toolbar } from "@mui/material"
 
-const GameHandler = ({ match, history }) => {
+const GameHandler = ({ location, match, history }) => {
   const [tempName, setTempName] = useState("")
   const [userName, setUserName] = useState("")
+  const { enqueueSnackbar } = useSnackbar()
   const regex = /^\d+$/
   if (!regex.test(match.params.code)) {
     history.replace("/")
@@ -25,28 +27,31 @@ const GameHandler = ({ match, history }) => {
         if (error == errorCodes.gameNotFound) {
           history.replace("/")
         }
-        toast.error(prettyError(error), { position: "top-center" })
+        enqueueSnackbar(prettyError(error), { variant: "error" })
       }}
     >
       <Game/>
     </GameChannel>
   ) : (
-    <div>
+    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Toolbar />
       <form onSubmit={(ev) => {
         ev.preventDefault()
         setUserName(tempName)
       }}>
-        <label>What should we call you?{" "}
-          <input
-            name="user_name"
+        <Stack spacing={2} direction="row">
+          <TextField
+            id="user_name"
+            label="Your name"
+            variant="outlined"
             value={tempName}
             onChange={(ev) => setTempName(ev.currentTarget.value)}
             required
           />
-        </label>
-        <button className="margin-left-1" type="submit">Submit</button>
+          <Button variant="contained" type="submit">{location.state?.creator ? "Start game" : "Join game"}</Button>
+        </Stack>
       </form>
-    </div>
+    </Box>
   )
 }
 
