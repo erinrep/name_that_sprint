@@ -27,8 +27,7 @@ import HowToRegIcon from "@mui/icons-material/HowToReg"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import SettingsDrawerContext from "../contexts/SettingsDrawer"
 
-const Game = (props) => {
-  const { window } = props
+const Game = () => {
   const [idea, setIdea] = useState("")
   const { 
     userName,
@@ -40,10 +39,9 @@ const Game = (props) => {
     getSuggestion,
     winner
   } = useContext(GameChannelContext)
-  const { mobileOpen, setToggleVisibility } = useContext(SettingsDrawerContext)
+  const { mobileOpen, setToggleVisibility, toggleDrawer } = useContext(SettingsDrawerContext)
   const roomCode = topic.split(":")[1]
 
-  const container = window !== undefined ? () => window().document.body : undefined
   const drawerWidth = 240
 
   useEffect(() => {
@@ -57,12 +55,12 @@ const Game = (props) => {
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer
-        container={container}
-        variant="temporary"
+        anchor="left"
         open={mobileOpen}
         ModalProps={{
           keepMounted: true,
         }}
+        onClose={toggleDrawer}
         sx={{
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
