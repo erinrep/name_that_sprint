@@ -16,7 +16,7 @@ const Lobby = (props) => {
           <Typography variant="h4" component="h2">Start Game</Typography>
           <Button variant="contained" onClick={() => {
             startGame((newRoomCode) => {
-              props.history.push(`/game/${newRoomCode}`)
+              props.history.push(`/game/${newRoomCode}`, {creator: true})
             })
           }}>Go!</Button>
 

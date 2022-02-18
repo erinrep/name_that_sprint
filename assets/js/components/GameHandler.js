@@ -6,7 +6,7 @@ import { errorCodes, prettyError } from "../helpers"
 import { useSnackbar } from "notistack"
 import { Box, Button, Stack, TextField, Toolbar } from "@mui/material"
 
-const GameHandler = ({ match, history }) => {
+const GameHandler = ({ location, match, history }) => {
   const [tempName, setTempName] = useState("")
   const [userName, setUserName] = useState("")
   const { enqueueSnackbar } = useSnackbar()
@@ -48,7 +48,7 @@ const GameHandler = ({ match, history }) => {
             onChange={(ev) => setTempName(ev.currentTarget.value)}
             required
           />
-          <Button variant="contained" type="submit">Join</Button>
+          <Button variant="contained" type="submit">{location.state?.creator ? "Start game" : "Join game"}</Button>
         </Stack>
       </form>
     </Box>

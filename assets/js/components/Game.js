@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { GameChannelContext } from "../contexts/GameChannel"
 import { maybeAddAnS } from "../helpers"
 import LeaderActions from "./LeaderActions"
@@ -25,84 +25,61 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline"
 import LightbulbIcon from "@mui/icons-material/Lightbulb"
 import HowToRegIcon from "@mui/icons-material/HowToReg"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
+import SettingsDrawerContext from "../contexts/SettingsDrawer"
 
-const Game = () => {
+const Game = (props) => {
+  const { window } = props
   const [idea, setIdea] = useState("")
   const { 
     userName,
     sendIdea,
-    players = [],
     topic = "",
     ideas = [],
-    isLeader,
     votingMode,
-    setVotingMode,
     sendVote,
     getSuggestion,
-    declareWinner,
     winner
   } = useContext(GameChannelContext)
+  const { mobileOpen, setToggleVisibility } = useContext(SettingsDrawerContext)
   const roomCode = topic.split(":")[1]
-  const winnerVotes = winner ? ideas.find((idea) => idea.name == winner).votes.length : 0
-  const MAX_VOTES = 3
-  const playerVotes = players.reduce((map, player) => {
-    map[player] = ideas.reduce((total, current) => {
-      const votes = current.votes.filter(name => name === player).length
-      return total += votes
-    }, 0)
-    return map
-  }, {})
+
+  const container = window !== undefined ? () => window().document.body : undefined
+  const drawerWidth = 240
+
+  useEffect(() => {
+    setToggleVisibility(true)
+
+    return () => {
+      setToggleVisibility(false)
+    }
+  }, [])
 
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer
-        variant="permanent"
+        container={container}
+        variant="temporary"
+        open={mobileOpen}
+        ModalProps={{
+          keepMounted: true,
+        }}
         sx={{
-          width: 240,
-          flexShrink: 0,
-          ["& .MuiDrawer-paper"]: { width: 240, boxSizing: "border-box" },
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: "auto",  bgcolor: "grey.100", padding: "20px" }}>
-          <Stack spacing={2}>
-            <Typography variant="h5" component="h3">Players</Typography>
-            <Paper>
-              <List>
-                {players.map((player) => {
-                  return (
-                    <ListItem key={player}>
-                      <ListItemIcon>
-                        {playerVotes[player] >= MAX_VOTES ? <HowToRegIcon color="secondary"/> : <PersonIcon color="secondary" />}
-                      </ListItemIcon>
-                      <ListItemText primary={player} />
-                    </ListItem>
-                  )
-                })}
-              </List>
-            </Paper>
-            {isLeader &&
-            <>
-              <Typography variant="h5" component="h3">Settings</Typography>
-              {!winner && <LeaderActions
-                ideas={ideas}
-                votingMode={votingMode}
-                setVotingMode={setVotingMode}
-                declareWinner={declareWinner}
-              />}
-            </> 
-            }
-            <Container>
-              <a href="https://www.phoenixframework.org/" target="_BLANK" rel="noreferrer">
-                <img
-                  src="../images/phoenix-powered.png"
-                  alt="Phoenix Powered text next to Phoenix logo"
-                  width="150px"
-                />
-              </a>
-            </Container>
-          </Stack>
-        </Box>
+        <GameSettings/>
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          display: { xs: "none", sm: "block" },
+          ["& .MuiDrawer-paper"]: { width: drawerWidth, boxSizing: "border-box" },
+        }}
+      >
+        <GameSettings/>
       </Drawer>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -222,6 +199,71 @@ const Game = () => {
         </Container>
       </Box>
     </Box>
+  )
+}
+
+const GameSettings = () => {
+  const MAX_VOTES = 3
+  const { 
+    players = [],
+    ideas = [],
+    isLeader,
+    votingMode,
+    setVotingMode,
+    declareWinner,
+    winner
+  } = useContext(GameChannelContext)
+  const playerVotes = players.reduce((map, player) => {
+    map[player] = ideas.reduce((total, current) => {
+      const votes = current.votes.filter(name => name === player).length
+      return total += votes
+    }, 0)
+    return map
+  }, {})
+
+  return (
+    <>
+      <Toolbar />
+      <Box sx={{ overflow: "auto",  bgcolor: "grey.100", padding: "20px" }}>
+        <Stack spacing={2}>
+          <Typography variant="h5" component="h3">Players</Typography>
+          <Paper>
+            <List>
+              {players.map((player) => {
+                return (
+                  <ListItem key={player}>
+                    <ListItemIcon>
+                      {playerVotes[player] >= MAX_VOTES ? <HowToRegIcon color="secondary"/> : <PersonIcon color="secondary" />}
+                    </ListItemIcon>
+                    <ListItemText primary={player} />
+                  </ListItem>
+                )
+              })}
+            </List>
+          </Paper>
+          {isLeader &&
+            <>
+              <Typography variant="h5" component="h3">Settings</Typography>
+              {!winner && <LeaderActions
+                ideas={ideas}
+                votingMode={votingMode}
+                setVotingMode={setVotingMode}
+                declareWinner={declareWinner}
+              />}
+            </> 
+          }
+          <Container>
+            <a href="https://www.phoenixframework.org/" target="_BLANK" rel="noreferrer">
+              <img
+                src="../images/phoenix-powered.png"
+                alt="Phoenix Powered text next to Phoenix logo"
+                width="150px"
+              />
+            </a>
+          </Container>
+        </Stack>
+      </Box>
+    </>
   )
 }
 

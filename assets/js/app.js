@@ -3,23 +3,31 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter as Router } from "react-router-dom"
 import { SnackbarProvider } from "notistack"
-import { AppBar, CssBaseline, Toolbar, Typography } from "@mui/material"
-
+import { CssBaseline } from "@mui/material"
 import Routes from "./Routes"
+import SettingsDrawerContext from "./contexts/SettingsDrawer"
+import Header from "./components/Header"
 
-export default function App() {
+export default function App(props) {
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [showToggle, setShowToggle] = React.useState(false)
+
+  const toggleDrawer = () => {
+    setMobileOpen(!mobileOpen)
+  }
+
+  const setToggleVisibility = (value) => {
+    setShowToggle(value)
+  }
+
   return (
     <Router>
       <CssBaseline />
       <SnackbarProvider maxSnack={3}>
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-          <Toolbar>
-            <Typography variant="h4" noWrap component="h1" flexGrow={1}>
-                Name That Sprint!
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Routes />
+        <SettingsDrawerContext.Provider value={{mobileOpen, toggleDrawer, showToggle, setToggleVisibility}}>
+          <Header />
+          <Routes />
+        </SettingsDrawerContext.Provider>
       </SnackbarProvider>
     </Router>
   )
