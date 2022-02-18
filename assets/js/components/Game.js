@@ -54,34 +54,8 @@ const Game = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Drawer
-        anchor="left"
-        open={mobileOpen}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        onClose={toggleDrawer}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
-        }}
-      >
-        <GameSettings/>
-      </Drawer>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          display: { xs: "none", sm: "block" },
-          ["& .MuiDrawer-paper"]: { width: drawerWidth, boxSizing: "border-box" },
-        }}
-      >
-        <GameSettings/>
-      </Drawer>
-
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Container maxWidth="sm" sx={{marginLeft: "0px"}}>
+        <Container maxWidth="sm" sx={{ marginLeft: { "sm": `${drawerWidth}px`, "xs": "0px" }}}>
           <Toolbar />
           <Stack spacing={2}>
             <Typography variant="h5" component="h2">
@@ -196,6 +170,31 @@ const Game = () => {
           </Stack>
         </Container>
       </Box>
+      <Drawer
+        anchor="left"
+        open={mobileOpen}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        onClose={toggleDrawer}
+        sx={{
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+        }}
+      >
+        <GameSettings/>
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          display: { xs: "none", sm: "block" },
+          ["& .MuiDrawer-paper"]: { width: drawerWidth, boxSizing: "border-box" },
+        }}
+      >
+        <GameSettings/>
+      </Drawer>
     </Box>
   )
 }
