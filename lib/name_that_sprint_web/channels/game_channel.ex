@@ -24,7 +24,7 @@ defmodule NameThatSprintWeb.GameChannel do
       end)
       |> Enum.map(fn {name, _info} -> name end)
 
-    broadcast!(socket, "player_joined", %{users: users})
+    broadcast!(socket, "player_joined", %{users: users, new_user: socket.assigns.user})
     {:noreply, socket}
   end
 

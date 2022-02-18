@@ -50,7 +50,12 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
     if (socket && !gameChannel) {
       const channel = socket.channel(topic, {user_name: userName})
 
-      channel.on("player_joined", ({users}) => setPlayers(users))
+      channel.on("player_joined", ({users, new_user}) => {
+        setPlayers(users)
+        if (new_user !== userName) {
+          enqueueSnackbar(`${new_user} joined`, { variant: "info" })
+        }
+      })
       channel.on("player_left", ({users}) => setPlayers(users))
       channel.on("idea_received", (idea) => {
         ideaRef.current = [...ideaRef.current, idea]
