@@ -47,6 +47,7 @@ const GameHandler = ({ location, match, history }) => {
             value={tempName}
             onChange={(ev) => setTempName(ev.currentTarget.value)}
             required
+            autoFocus
           />
           <Button variant="contained" type="submit">{location.state?.creator ? "Start game" : "Join game"}</Button>
         </Stack>

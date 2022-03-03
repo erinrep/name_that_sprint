@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react"
 import { withRouter } from "react-router"
 import { LobbyChannelContext } from "../contexts/LobbyChannel"
-import {Box, Button, Container, Divider, Stack, TextField, Toolbar, Typography } from "@mui/material"
+import {Box, Button, Container, Stack, TextField, Toolbar, Typography } from "@mui/material"
+import PhoenixLogo from "./PhoenixLogo"
 
 const Lobby = (props) => {
   const [roomCode, setRoomCode] = useState("")
@@ -36,15 +37,7 @@ const Lobby = (props) => {
               <Button variant="contained" type="submit">Join!</Button>
             </Stack>
           </form>
-          <Container sx={{textAlign: "center"}}>
-            <a href="https://www.phoenixframework.org/" target="_BLANK" rel="noreferrer">
-              <img
-                src="../images/phoenix-powered.png"
-                alt="Phoenix Powered text next to Phoenix logo"
-                width="250px"
-              />
-            </a>
-          </Container>
+          <PhoenixLogo />
         </Stack>
       </Container>
     </Box>

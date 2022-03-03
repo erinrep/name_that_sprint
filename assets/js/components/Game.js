@@ -26,6 +26,7 @@ import LightbulbIcon from "@mui/icons-material/Lightbulb"
 import HowToRegIcon from "@mui/icons-material/HowToReg"
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import SettingsDrawerContext from "../contexts/SettingsDrawer"
+import PhoenixLogo from "./PhoenixLogo"
 
 const Game = () => {
   const [idea, setIdea] = useState("")
@@ -221,7 +222,7 @@ const GameSettings = () => {
   return (
     <>
       <Toolbar />
-      <Box sx={{ overflow: "auto",  bgcolor: "grey.100", padding: "20px" }}>
+      <Box sx={{ overflow: "auto",  bgcolor: "action.selected", padding: "20px" }}>
         <Stack spacing={2}>
           <Typography variant="h5" component="h3">Players</Typography>
           <Paper>
@@ -249,15 +250,7 @@ const GameSettings = () => {
               />}
             </> 
           }
-          <Container>
-            <a href="https://www.phoenixframework.org/" target="_BLANK" rel="noreferrer">
-              <img
-                src="../images/phoenix-powered.png"
-                alt="Phoenix Powered text next to Phoenix logo"
-                width="150px"
-              />
-            </a>
-          </Container>
+          <PhoenixLogo />
         </Stack>
       </Box>
     </>

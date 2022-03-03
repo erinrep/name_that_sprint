@@ -3,7 +3,8 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter as Router } from "react-router-dom"
 import { SnackbarProvider } from "notistack"
-import { CssBaseline } from "@mui/material"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { CssBaseline, useMediaQuery } from "@mui/material"
 import Routes from "./Routes"
 import SettingsDrawerContext from "./contexts/SettingsDrawer"
 import Header from "./components/Header"
@@ -20,15 +21,29 @@ export default function App(props) {
     setShowToggle(value)
   }
 
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: prefersDarkMode ? "dark" : "light",
+        },
+      }),
+    [prefersDarkMode],
+  )
+
   return (
     <Router>
-      <CssBaseline />
-      <SnackbarProvider maxSnack={3}>
-        <SettingsDrawerContext.Provider value={{mobileOpen, toggleDrawer, showToggle, setToggleVisibility}}>
-          <Header />
-          <Routes />
-        </SettingsDrawerContext.Provider>
-      </SnackbarProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SnackbarProvider maxSnack={3}>
+          <SettingsDrawerContext.Provider value={{mobileOpen, toggleDrawer, showToggle, setToggleVisibility}}>
+            <Header />
+            <Routes />
+          </SettingsDrawerContext.Provider>
+        </SnackbarProvider>
+      </ThemeProvider>
     </Router>
   )
 }
