@@ -205,7 +205,8 @@ const GameSettings = () => {
   const { 
     players = [],
     ideas = [],
-    isLeader,
+    userName,
+    leader,
     votingMode,
     setVotingMode,
     declareWinner,
@@ -228,18 +229,20 @@ const GameSettings = () => {
           <Paper>
             <List>
               {players.map((player) => {
+                const voted = playerVotes[player] >= MAX_VOTES
                 return (
                   <ListItem key={player}>
                     <ListItemIcon>
-                      {playerVotes[player] >= MAX_VOTES ? <HowToRegIcon color="secondary"/> : <PersonIcon color="secondary" />}
+                      {voted ? <HowToRegIcon color="secondary"/> : <PersonIcon color="secondary" />}
                     </ListItemIcon>
-                    <ListItemText primary={player} />
+                    <ListItemText primary={player === leader ? `${player} (leader)` : player} />
+                    {voted && <span className="sr-only">has voted</span>}
                   </ListItem>
                 )
               })}
             </List>
           </Paper>
-          {isLeader &&
+          {leader === userName &&
             <>
               <Typography variant="h5" component="h3">Settings</Typography>
               {!winner && <LeaderActions

@@ -42,6 +42,12 @@ defmodule NameThatSprintWeb.GameChannel do
     end
   end
 
+  def handle_in("set_leader", name, socket) do
+    {:ok, name} = Game.set_leader(via(socket.topic), name)
+    broadcast!(socket, "new_leader", %{leader: name})
+    {:reply, :ok, socket}
+  end
+
   def handle_in("idea", %{"name" => ""}, socket), do: {:reply, {:error, %{reason: :empty_name}}, socket}
   def handle_in("idea", %{"name" => name}, socket) when is_binary(name) do
     case Game.add_idea(via(socket.topic), name) do
@@ -102,6 +108,12 @@ defmodule NameThatSprintWeb.GameChannel do
       socket
       |> Presence.list()
       |> Map.has_key?(user_name)
+
+    {:ok, status} = Game.status(via(socket.topic))
+
+    if status.leader == nil do
+      Game.set_leader(via(socket.topic), user_name)
+    end
 
     case player_exists? do
       false ->

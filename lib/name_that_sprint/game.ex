@@ -11,7 +11,7 @@ defmodule NameThatSprint.Game do
 
   def init({name}) do
     send(self(), {:set_state, {name}})
-    {:ok, %{name: name, ideas: []}}
+    {:ok, %{name: name, ideas: [], leader: nil}}
   end
 
   def terminate(:shutdown, name) do
@@ -22,6 +22,10 @@ defmodule NameThatSprint.Game do
 
   def status(game) do
     GenServer.call(game, :status)
+  end
+
+  def set_leader(game, name) do
+    GenServer.call(game, {:set_leader, name})
   end
 
   def add_idea(game, name) do
@@ -46,6 +50,12 @@ defmodule NameThatSprint.Game do
 
   def handle_call(:status, _from, state_data) do
     reply_success(state_data, {:ok, state_data})
+  end
+
+  def handle_call({:set_leader, name}, _from, state_data) do
+    state_data
+    |> Map.put(:leader, name)
+    |> reply_success({:ok, name})
   end
 
   def handle_call({:add_idea, name}, _from, state_data) do
@@ -101,7 +111,7 @@ defmodule NameThatSprint.Game do
   def handle_info({:set_state, {name}}, _state_data) do
     state_data =
       case :ets.lookup(:game_state, name) do
-        [] -> %{name: name, ideas: [], voting_mode: false, vote_tracking: %{}, winner: nil}
+        [] -> %{name: name, ideas: [], voting_mode: false, vote_tracking: %{}, winner: nil, leader: nil}
         [{_key, state}] -> state
       end
 
