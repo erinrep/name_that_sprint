@@ -16,12 +16,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
   const ideaRef = useRef([])
   const { enqueueSnackbar } = useSnackbar()
 
-  const updateLeader = (name) => {
-    gameChannel && gameChannel.push("set_leader", name)
-      .receive("error", ({reason}) => enqueueSnackbar(prettyError(reason), { variant: "error" }))
-      .receive("timeout", () => enqueueSnackbar(prettyError(prettyError(errorCodes.timeout)), { variant: "error" }))
-  }
-
   const sendIdea = (name) => {
     gameChannel && gameChannel.push("idea", {name: name})
       .receive("error", ({reason}) => enqueueSnackbar(prettyError(reason), { variant: "error" }))
@@ -59,7 +53,6 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
 
       channel.join()
         .receive("ok", ({ideas, voting_mode, winner, leader}) => {
-          console.log("leader", leader)
           setIdeas(ideas)
           setLeader(leader)
           ideaRef.current = ideas
@@ -70,11 +63,9 @@ const GameChannel = ({ topic, userName, onJoinError, children }) => {
 
       setGameChannel(channel)
     } else if (gameChannel) {
-      gameChannel.on("player_left", ({users}) => {
-        if (!users.find(user => user == leader)) {
-          updateLeader(users[0])
-        }
+      gameChannel.on("player_left", ({users, user}) => {
         setPlayers(users)
+        enqueueSnackbar(`${user} left`, { variant: "info" })
       })
       gameChannel.on("player_joined", ({users, new_user}) => {
         setPlayers(users)

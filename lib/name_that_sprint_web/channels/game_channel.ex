@@ -29,6 +29,8 @@ defmodule NameThatSprintWeb.GameChannel do
   end
 
   def terminate(_reason, socket) do
+    {:ok, status} = Game.status(via(socket.topic))
+
     case Map.get(socket.assigns, :user) do
       nil -> {:noreply, socket}
       user ->
@@ -38,14 +40,13 @@ defmodule NameThatSprintWeb.GameChannel do
           |> Map.keys()
           |> Enum.filter(&(&1 != user))
 
-        broadcast!(socket, "player_left", %{users: users})
-    end
-  end
+        broadcast!(socket, "player_left", %{users: users, user: user})
 
-  def handle_in("set_leader", name, socket) do
-    {:ok, name} = Game.set_leader(via(socket.topic), name)
-    broadcast!(socket, "new_leader", %{leader: name})
-    {:reply, :ok, socket}
+        if user == status.leader do
+          {:ok, name} = Game.set_leader(via(socket.topic), List.first(users))
+          broadcast!(socket, "new_leader", %{leader: name})
+        end
+    end
   end
 
   def handle_in("idea", %{"name" => ""}, socket), do: {:reply, {:error, %{reason: :empty_name}}, socket}
