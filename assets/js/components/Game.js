@@ -28,12 +28,15 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents"
 import SettingsDrawerContext from "../contexts/SettingsDrawer"
 import PhoenixLogo from "./PhoenixLogo"
 
+const MAX_VOTES = 3
+
 const Game = () => {
   const [idea, setIdea] = useState("")
   const { 
     userName,
     sendIdea,
     topic = "",
+    players,
     ideas = [],
     votingMode,
     sendVote,
@@ -42,8 +45,9 @@ const Game = () => {
   } = useContext(GameChannelContext)
   const { mobileOpen, setToggleVisibility, toggleDrawer } = useContext(SettingsDrawerContext)
   const roomCode = topic.split(":")[1]
-
   const drawerWidth = 240
+  const playerVotes = getPlayerVotes(players, ideas)
+  const votesRemaining = MAX_VOTES - playerVotes[userName]
 
   useEffect(() => {
     setToggleVisibility(true)
@@ -95,7 +99,7 @@ const Game = () => {
               <>
                 <Box>
                   {votingMode ? (
-                    <p>Vote for your favorites</p>
+                    <p>Vote for your favorites! You have {votesRemaining} {maybeAddAnS("vote", votesRemaining)} remaining.</p>
                   ) : (
                     <>
                       <p>
@@ -200,8 +204,17 @@ const Game = () => {
   )
 }
 
+const getPlayerVotes = (players, ideas) => {
+  return players.reduce((map, player) => {
+    map[player] = ideas.reduce((total, current) => {
+      const votes = current.votes.filter(name => name === player).length
+      return total += votes
+    }, 0)
+    return map
+  }, {})
+}
+
 const GameSettings = () => {
-  const MAX_VOTES = 3
   const { 
     players = [],
     ideas = [],
@@ -212,13 +225,7 @@ const GameSettings = () => {
     declareWinner,
     winner
   } = useContext(GameChannelContext)
-  const playerVotes = players.reduce((map, player) => {
-    map[player] = ideas.reduce((total, current) => {
-      const votes = current.votes.filter(name => name === player).length
-      return total += votes
-    }, 0)
-    return map
-  }, {})
+  const playerVotes = getPlayerVotes(players, ideas)
 
   return (
     <>
