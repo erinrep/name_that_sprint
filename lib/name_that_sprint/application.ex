@@ -8,9 +8,10 @@ defmodule NameThatSprint.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
+      {Phoenix.PubSub, [name: NameThatSprint.PubSub, adapter: Phoenix.PubSub.PG2]},
+      NameThatSprint.Presence,
       # Start the Endpoint (http/https)
       NameThatSprintWeb.Endpoint,
-      NameThatSprint.Presence,
       {Registry, keys: :unique, name: Registry.Game},
       NameThatSprint.GameSupervisor
       # Starts a worker by calling: NameThatSprint.Worker.start_link(arg)

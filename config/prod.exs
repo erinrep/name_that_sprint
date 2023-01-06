@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # For production, don't forget to configure the url host
 # to something meaningful, Phoenix uses this information
@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :name_that_sprint, NameThatSprintWeb.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [scheme: "https", host: "name-that-sprint.herokuapp.com", port: 443],
+  url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
@@ -61,7 +61,3 @@ config :logger, level: :info
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
-
-# Finally import the config/prod.secret.exs which loads secrets
-# and configuration from environment variables.
-import_config "prod.secret.exs"

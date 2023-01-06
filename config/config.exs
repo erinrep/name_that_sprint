@@ -5,14 +5,14 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
 
 # Configures the endpoint
 config :name_that_sprint, NameThatSprintWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "fPuLREMWyX4H+lvTUKJiSBN1+xgoNrNt8LlKOC7LD0w/31yvEk2fGJQNNsSC2jKG",
   render_errors: [view: NameThatSprintWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: NameThatSprint.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: NameThatSprint.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,
