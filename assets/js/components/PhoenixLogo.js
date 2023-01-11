@@ -5,7 +5,7 @@ const PhoenixLogo = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
 
   return (
-    <Container>
+    <Container sx={{textAlign: "center"}}>
       <a href="https://www.phoenixframework.org/" target="_BLANK" rel="noreferrer">
         <img
           src={`../images/phoenix-powered${prefersDarkMode ? "-dark" : ""}.png`}
