@@ -154,17 +154,26 @@ const Game = () => {
                           <ListItemIcon>
                             <LightbulbIcon color="secondary" fontSize="large" />
                           </ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
+                            disableTypography
                             primary={<Typography aria-hidden="true" variant="h6" component="span">{name}</Typography>}
                             secondary={
-                              <Stack direction="row" spacing={1} sx={{
-                                paddingLeft:"10px"
-                              }}
-                              >
+                              <List sx={{
+                                display: "flex",
+                                padding: "0px",
+                                flexWrap: "wrap"
+                              }}>
                                 {votes.map((user, index) => (
-                                  <Chip key={`${name}:${user}:${index}`} label={user} color="primary" size="small" />
+                                  <ListItem 
+                                    key={`${name}:${user}:${index}`}
+                                    sx={{
+                                      width: "auto",
+                                      padding: "0 0 5px 5px"
+                                  }}>
+                                    <Chip key={`${name}:${user}:${index}`} label={user} color="primary" size="small" />
+                                  </ListItem>
                                 ))}
-                              </Stack>}/>
+                              </List>}/>
                         </ListItem>
                       )
                     })}
