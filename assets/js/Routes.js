@@ -10,11 +10,11 @@ const Routes = () => {
     <Socket>
       <Switch>
         <Route path="/game/:code">
-          <GameHandler/>
+          <GameHandler />
         </Route>
         <Route path='/'>
           <LobbyChannel>
-            <Lobby/>
+            <Lobby />
           </LobbyChannel>
         </Route>
       </Switch>

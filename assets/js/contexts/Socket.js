@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react"
 import { Socket as PhxSocket } from "phoenix"
 
-export const SocketContext = createContext(null) 
+export const SocketContext = createContext(null)
 
 const Socket = ({ children }) => {
   const [socket, setSocket] = useState(null)
@@ -22,11 +22,11 @@ const Socket = ({ children }) => {
   }
 
   useEffect(() => {
-    setupSocket() 
+    setupSocket()
     return teardownSocket
   }, [socket])
 
-  return ( 
+  return (
     <SocketContext.Provider value={socket}>
       {children}
     </SocketContext.Provider>

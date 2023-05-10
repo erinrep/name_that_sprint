@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React from "react"
 import { Button, FormLabel, FormControlLabel, Paper, Radio, RadioGroup, Stack } from "@mui/material"
 
 const LeaderActions = ({
@@ -35,7 +35,7 @@ const LeaderActions = ({
                     ev.preventDefault()
                     setVotingMode(true)
                   }} />
-                } 
+                }
                 label="Voting Mode" />
             </RadioGroup>
           </Stack>

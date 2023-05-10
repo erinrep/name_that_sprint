@@ -30,7 +30,7 @@ const GameHandler = ({ location, match, history }) => {
         enqueueSnackbar(prettyError(error), { variant: "error" })
       }}
     >
-      <Game/>
+      <Game />
     </GameChannel>
   ) : (
     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

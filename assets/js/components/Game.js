@@ -32,7 +32,7 @@ const MAX_VOTES = 3
 
 const Game = () => {
   const [idea, setIdea] = useState("")
-  const { 
+  const {
     userName,
     sendIdea,
     topic = "",
@@ -60,7 +60,7 @@ const Game = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Container maxWidth="sm" sx={{ marginLeft: { "sm": `${drawerWidth}px`, "xs": "0px" }}}>
+        <Container maxWidth="sm" sx={{ marginLeft: { "sm": `${drawerWidth}px`, "xs": "0px" } }}>
           <Toolbar />
           <Stack spacing={2}>
             <Typography variant="h5" component="h2">
@@ -73,10 +73,10 @@ const Game = () => {
                 <List>
                   {ideas
                     .sort((a, b) => b.votes.length - a.votes.length)
-                    .map(({name, votes}, index) => {
+                    .map(({ name, votes }, index) => {
                       const numVotes = votes.length
                       return (
-                        <ListItem 
+                        <ListItem
                           key={name}
                         >
                           {index === 0 && (
@@ -84,7 +84,7 @@ const Game = () => {
                               <EmojiEventsIcon color="secondary" fontSize="large" />
                             </ListItemIcon>
                           )}
-                          
+
                           <ListItemText
                             inset={index !== 0}
                             primary={<Typography variant="h6" component="span">{name}</Typography>}
@@ -129,19 +129,19 @@ const Game = () => {
                           }}>Get Suggestion</Button>
                         </Stack>
                       </form>
-                    </> 
+                    </>
                   )}
                 </Box>
                 <Box>
                   <Typography variant="h4" component="h3">Ideas</Typography>
                   <List>
-                    {ideas.map(({name, votes}) => {
+                    {ideas.map(({ name, votes }) => {
                       return (
-                        <ListItem 
+                        <ListItem
                           key={name}
                           secondaryAction={votingMode ?
                             <>
-                              {votes.includes(userName) && 
+                              {votes.includes(userName) &&
                                 <IconButton edge="end" aria-label={`Remove vote for ${name}`} onClick={() => sendVote(name, false)}>
                                   < RemoveCircleOutlineIcon />
                                 </IconButton>}
@@ -164,16 +164,16 @@ const Game = () => {
                                 flexWrap: "wrap"
                               }}>
                                 {votes.map((user, index) => (
-                                  <ListItem 
+                                  <ListItem
                                     key={`${name}:${user}:${index}`}
                                     sx={{
                                       width: "auto",
                                       padding: "0 0 5px 5px"
-                                  }}>
+                                    }}>
                                     <Chip key={`${name}:${user}:${index}`} label={user} color="primary" size="small" />
                                   </ListItem>
                                 ))}
-                              </List>}/>
+                              </List>} />
                         </ListItem>
                       )
                     })}
@@ -196,7 +196,7 @@ const Game = () => {
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
       >
-        <GameSettings/>
+        <GameSettings />
       </Drawer>
       <Drawer
         variant="permanent"
@@ -207,7 +207,7 @@ const Game = () => {
           ["& .MuiDrawer-paper"]: { width: drawerWidth, boxSizing: "border-box" },
         }}
       >
-        <GameSettings/>
+        <GameSettings />
       </Drawer>
     </Box>
   )
@@ -224,7 +224,7 @@ const getPlayerVotes = (players, ideas) => {
 }
 
 const GameSettings = () => {
-  const { 
+  const {
     players = [],
     ideas = [],
     userName,
@@ -239,7 +239,7 @@ const GameSettings = () => {
   return (
     <>
       <Toolbar />
-      <Box sx={{ overflow: "auto",  bgcolor: "action.selected", padding: "20px" }}>
+      <Box sx={{ overflow: "auto", bgcolor: "action.selected", padding: "20px" }}>
         <Stack spacing={2}>
           <Typography variant="h5" component="h3">Players</Typography>
           <Paper>
@@ -249,10 +249,10 @@ const GameSettings = () => {
                 return (
                   <ListItem key={player}>
                     <ListItemIcon>
-                      {voted ? <HowToRegIcon color="secondary"/> : <PersonIcon color="secondary" />}
+                      {voted ? <HowToRegIcon color="secondary" /> : <PersonIcon color="secondary" />}
                     </ListItemIcon>
                     <ListItemText
-                      sx={{overflowWrap: "break-word"}}
+                      sx={{ overflowWrap: "break-word" }}
                       primary={player === leader ? `${player} (leader)` : player} />
                     {voted && <span className="sr-only">has voted</span>}
                   </ListItem>
@@ -269,7 +269,7 @@ const GameSettings = () => {
                 setVotingMode={setVotingMode}
                 declareWinner={declareWinner}
               />}
-            </> 
+            </>
           }
           <PhoenixLogo />
         </Stack>

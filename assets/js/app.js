@@ -38,7 +38,7 @@ export default function App(props) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <SnackbarProvider maxSnack={3}>
-          <SettingsDrawerContext.Provider value={{mobileOpen, toggleDrawer, showToggle, setToggleVisibility}}>
+          <SettingsDrawerContext.Provider value={{ mobileOpen, toggleDrawer, showToggle, setToggleVisibility }}>
             <Header />
             <Routes />
           </SettingsDrawerContext.Provider>
