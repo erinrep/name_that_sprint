@@ -141,13 +141,13 @@ const Game = () => {
                           key={name}
                           secondaryAction={votingMode ?
                             <>
+                              {votes.includes(userName) && 
+                                <IconButton edge="end" aria-label={`Remove vote for ${name}`} onClick={() => sendVote(name, false)}>
+                                  < RemoveCircleOutlineIcon />
+                                </IconButton>}
                               <IconButton edge="end" aria-label={`Add vote for ${name}`} onClick={() => sendVote(name)}>
                                 <AddCircleOutlineIcon />
                               </IconButton>
-                              {votes.includes(userName) && 
-                            <IconButton edge="end" aria-label={`Remove vote for ${name}`} onClick={() => sendVote(name, false)}>
-                              <RemoveCircleOutlineIcon />
-                            </IconButton>}
                             </> : null
                           }
                         >
@@ -251,7 +251,9 @@ const GameSettings = () => {
                     <ListItemIcon>
                       {voted ? <HowToRegIcon color="secondary"/> : <PersonIcon color="secondary" />}
                     </ListItemIcon>
-                    <ListItemText primary={player === leader ? `${player} (leader)` : player} />
+                    <ListItemText
+                      sx={{overflowWrap: "break-word"}}
+                      primary={player === leader ? `${player} (leader)` : player} />
                     {voted && <span className="sr-only">has voted</span>}
                   </ListItem>
                 )
