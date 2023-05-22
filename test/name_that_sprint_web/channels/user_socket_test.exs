@@ -1,10 +1,11 @@
-defmodule NameThatSprintWeb.UserSocketTest do 
+defmodule NameThatSprintWeb.UserSocketTest do
   use NameThatSprintWeb.ChannelCase
   alias NameThatSprintWeb.UserSocket
 
   describe "connect/3" do
     test "can connect without parameters" do
-    assert {:ok, %Phoenix.Socket{}} = connect(UserSocket, %{}) end
+      assert {:ok, %Phoenix.Socket{}} = connect(UserSocket, %{})
+    end
   end
 
   describe "id/1" do

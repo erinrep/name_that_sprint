@@ -7,7 +7,7 @@ defmodule NameThatSprint.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14.2",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -33,10 +33,11 @@ defmodule NameThatSprint.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.13"},
-      {:phoenix_pubsub, "~> 2.0.0"},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix, "~> 1.7.2"},
+      {:phoenix_pubsub, "~> 2.1.0"},
+      {:phoenix_html, "~> 3.3.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_view, "~> 2.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"}
