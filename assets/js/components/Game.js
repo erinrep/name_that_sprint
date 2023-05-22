@@ -241,6 +241,17 @@ const GameSettings = () => {
       <Toolbar />
       <Box sx={{ overflow: "auto", bgcolor: "action.selected", padding: "20px" }}>
         <Stack spacing={2}>
+          {leader === userName &&
+            <>
+              <Typography variant="h5" component="h3">Settings</Typography>
+              {!winner && <LeaderActions
+                ideas={ideas}
+                votingMode={votingMode}
+                setVotingMode={setVotingMode}
+                declareWinner={declareWinner}
+              />}
+            </>
+          }
           <Typography variant="h5" component="h3">Players</Typography>
           <Paper>
             <List>
@@ -260,17 +271,6 @@ const GameSettings = () => {
               })}
             </List>
           </Paper>
-          {leader === userName &&
-            <>
-              <Typography variant="h5" component="h3">Settings</Typography>
-              {!winner && <LeaderActions
-                ideas={ideas}
-                votingMode={votingMode}
-                setVotingMode={setVotingMode}
-                declareWinner={declareWinner}
-              />}
-            </>
-          }
           <PhoenixLogo />
         </Stack>
       </Box>
