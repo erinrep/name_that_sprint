@@ -9,6 +9,9 @@ Install with brew
 `brew install elixir`
 or visit [elixir-lang.org](https://elixir-lang.org/install.html) for other installation options
 
+### Requires npm
+[installation instructions](https://www.npmjs.com/package/npm)
+
 ## Setup
 To start the server:
 
