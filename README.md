@@ -1,18 +1,21 @@
 # NameThatSprint
 
-To start your Phoenix server:
+Join a game with teammates to come up with ideas for the name of your sprint and vote on your favorites!
 
-  * Install dependencies with `mix setup`
-  * Start Phoenix endpoint with `mix phx.server`
+## Requirements
+### Requires Elixir 1.10.4 or higher
+
+Install with brew
+`brew install elixir`
+or visit [elixir-lang.org](https://elixir-lang.org/install.html) for other installation options
+
+## Setup
+To start the server:
+
+  * Run `mix setup` to install and setup dependencies
+  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Testing
+Run `mix test` to run unit tests
