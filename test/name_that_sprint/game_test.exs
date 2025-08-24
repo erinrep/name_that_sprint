@@ -1,4 +1,4 @@
-defmodule NameThatSprint.GameTest do 
+defmodule NameThatSprint.GameTest do
   use ExUnit.Case
   alias NameThatSprint.Game
 
@@ -34,7 +34,7 @@ defmodule NameThatSprint.GameTest do
 
       Game.terminate(:shutdown, "my_game")
     end
-    
+
     test "set_voting_mode/2 success" do
       {:ok, game} = Game.start_link("my_game")
       {:ok, _mode} = Game.set_voting_mode(game, true)
@@ -44,7 +44,7 @@ defmodule NameThatSprint.GameTest do
 
       Game.terminate(:shutdown, "my_game")
     end
-    
+
     test "add_vote/3 success" do
       {:ok, game} = Game.start_link("my_game")
       {:ok, _idea} = Game.add_idea(game, "fun idea")
@@ -62,7 +62,7 @@ defmodule NameThatSprint.GameTest do
 
       Game.terminate(:shutdown, "my_game")
     end
-    
+
     test "add_vote/3 error :idea_not_found" do
       {:ok, game} = Game.start_link("my_game")
       {:error, reason} = Game.add_vote(game, "fun idea", "veronica")
@@ -97,7 +97,7 @@ defmodule NameThatSprint.GameTest do
 
       Game.terminate(:shutdown, "my_game")
     end
-    
+
     test "remove_vote/3 error :idea_not_found" do
       {:ok, game} = Game.start_link("my_game")
       {:error, reason} = Game.remove_vote(game, "fun idea", "veronica")

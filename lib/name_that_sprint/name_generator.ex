@@ -1,5 +1,4 @@
 defmodule NameThatSprint.NameGenerator do
-
   @adj ~w(abhorrent abnormal abrasive absurd acidic acrid actually addicted
 adequate ad-hoc adorable adventurous agreeable alert amazing amusing ancient
 anemic angry annoyed anxious apathetic apologetic apoplectic aquatic arrogant
@@ -149,8 +148,10 @@ wrench wrist writer writing yam yard yarn year yoke zinc zipper zoo)
     case :rand.uniform(100) do
       x when x in 0..50 ->
         "#{Enum.random(@adj)} #{Enum.random(@nouns)}"
+
       x when x in 51..75 ->
         "#{Enum.random(@animals1)} #{Enum.random(@nouns)}"
+
       x when x in 76..100 ->
         "#{Enum.random(@adj)} #{Enum.random(@animals2)}"
     end
