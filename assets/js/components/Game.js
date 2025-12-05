@@ -213,7 +213,7 @@ const Game = () => {
   )
 }
 
-const getPlayerVotes = (players, ideas) => {
+const getPlayerVotes = (players = [], ideas) => {
   return players.reduce((map, player) => {
     map[player] = ideas.reduce((total, current) => {
       const votes = current.votes.filter(name => name === player).length
