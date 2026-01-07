@@ -32,7 +32,9 @@ defmodule NameThatSprintWeb.GameChannel do
     {:ok, status} = Game.status(via(socket.topic))
 
     case Map.get(socket.assigns, :user) do
-      nil -> {:noreply, socket}
+      nil ->
+        {:noreply, socket}
+
       user ->
         users =
           socket
@@ -49,13 +51,17 @@ defmodule NameThatSprintWeb.GameChannel do
     end
   end
 
-  def handle_in("idea", %{"name" => ""}, socket), do: {:reply, {:error, %{reason: :empty_name}}, socket}
+  def handle_in("idea", %{"name" => ""}, socket),
+    do: {:reply, {:error, %{reason: :empty_name}}, socket}
+
   def handle_in("idea", %{"name" => name}, socket) when is_binary(name) do
     case Game.add_idea(via(socket.topic), name) do
       {:ok, idea} ->
         broadcast!(socket, "idea_received", idea)
         {:reply, {:ok, idea}, socket}
-      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
     end
   end
 
@@ -67,19 +73,23 @@ defmodule NameThatSprintWeb.GameChannel do
 
   def handle_in("add_vote", %{"user" => user, "vote" => vote}, socket) do
     case Game.add_vote(via(socket.topic), vote, user) do
-      {:ok, item} -> 
+      {:ok, item} ->
         broadcast!(socket, "vote_updated", item)
         {:reply, :ok, socket}
-      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
     end
   end
 
   def handle_in("remove_vote", %{"user" => user, "vote" => vote}, socket) do
     case Game.remove_vote(via(socket.topic), vote, user) do
-      {:ok, item} -> 
+      {:ok, item} ->
         broadcast!(socket, "vote_updated", item)
         {:reply, :ok, socket}
-      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
     end
   end
 
@@ -89,10 +99,12 @@ defmodule NameThatSprintWeb.GameChannel do
 
   def handle_in("declare_winner", _params, socket) do
     case Game.declare_winner(via(socket.topic)) do
-      {:ok, winner} -> 
+      {:ok, winner} ->
         broadcast!(socket, "winner_declared", %{winner: winner})
         {:reply, :ok, socket}
-      {:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
     end
   end
 
@@ -104,6 +116,7 @@ defmodule NameThatSprintWeb.GameChannel do
   end
 
   defp assign_player({:error, reason}, _user_name), do: {:error, reason}
+
   defp assign_player(socket, user_name) do
     player_exists? =
       socket
@@ -120,11 +133,14 @@ defmodule NameThatSprintWeb.GameChannel do
       false ->
         send(self(), :after_join)
         assign(socket, :user, user_name)
-      true -> {:error, %{reason: :name_in_use}}
+
+      true ->
+        {:error, %{reason: :name_in_use}}
     end
   end
 
   defp game_status({:error, reason}), do: {:error, reason}
+
   defp game_status(socket) do
     {:ok, status} = Game.status(via(socket.topic))
     {:ok, status, socket}

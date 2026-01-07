@@ -22,9 +22,12 @@ defmodule NameThatSprintWeb.LobbyChannel do
     case GameSupervisor.start_game(room_code) do
       {:ok, _game} ->
         {:ok, %{room_code: room_code}}
+
       {:error, {:already_started, _pid}} ->
         {:error, :game_already_started}
-      error -> error
+
+      error ->
+        error
     end
   end
 end

@@ -20,5 +20,5 @@ defmodule NameThatSprintWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :name_that_sprint
+  use Gettext.Backend, otp_app: :name_that_sprint
 end
