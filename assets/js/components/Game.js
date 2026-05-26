@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
+import { useSnackbar } from "notistack"
 import { GameChannelContext } from "../contexts/GameChannel"
 import { maybeAddAnS } from "../helpers"
 import LeaderActions from "./LeaderActions"
@@ -21,6 +22,7 @@ import {
 } from "@mui/material"
 import PersonIcon from "@mui/icons-material/Person"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline"
 import LightbulbIcon from "@mui/icons-material/Lightbulb"
 import HowToRegIcon from "@mui/icons-material/HowToReg"
@@ -48,6 +50,7 @@ const Game = () => {
   const drawerWidth = 240
   const playerVotes = getPlayerVotes(players, ideas)
   const votesRemaining = MAX_VOTES - playerVotes[userName]
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     setToggleVisibility(true)
@@ -57,6 +60,15 @@ const Game = () => {
     }
   }, [])
 
+  const copyUrlToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      enqueueSnackbar("Room URL copied to clipboard", { variant: "info" })
+    } catch (err) {
+      console.error("Failed to copy: ", err)
+    }
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -65,6 +77,20 @@ const Game = () => {
           <Stack spacing={2}>
             <Typography variant="h5" component="h2">
               Room Code: {roomCode}
+              <IconButton
+                alt="Copy room URL to clipboard"
+                sx={{ 
+                  width: 16, 
+                  height: 16,
+                  verticalAlign: "top",
+                  "& .MuiSvgIcon-root": { fontSize: 16 }
+                }}
+                onClick={() => {
+                  copyUrlToClipboard(location.href)
+                }}
+              >
+                <ContentCopyIcon />
+              </IconButton>
             </Typography>
 
             {winner ? (
